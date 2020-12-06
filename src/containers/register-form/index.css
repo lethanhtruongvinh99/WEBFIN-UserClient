@@ -1,0 +1,46 @@
+@import "~antd/dist/antd.css";
+
+#root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.register-container {
+  margin: auto;
+}
+.register-form {
+  margin: auto;
+  min-width: 400px;
+  max-width: 500px;
+}
+.register-form-forgot {
+  float: right;
+}
+.ant-col-rtl .register-form-forgot {
+  float: left;
+}
+
+input,
+.input {
+  height: 35px;
+}
+
+.input,
+.input option {
+  height: 35px;
+  width: 300px;
+}
+
+.register-container Button {
+  margin: auto;
+  width: 100%;
+  height: 40px;
+}
+
+.register-container .button-row {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-around;
+}
