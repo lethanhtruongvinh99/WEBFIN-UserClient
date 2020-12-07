@@ -37,3 +37,10 @@ input {
   flex-flow: row;
   justify-content: space-around;
 }
+.loading-spinner {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  margin-bottom: 20px;
+  margin: 20px 0;
+}

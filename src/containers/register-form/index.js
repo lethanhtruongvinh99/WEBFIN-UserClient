@@ -1,13 +1,16 @@
-import React from "react";
-import { Form, Input, Button, DatePicker } from "antd";
+import React, { useState, useEffect } from "react";
+import { Form, Input, Button, DatePicker, Spin } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import "./index.css";
 import callServer from "../../utils/NetworkUtils";
 import showNotification from "../../utils/NotificationUtils";
 
-const registerForm = (props) => {
+const RegisterForm = (props) => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const onFinish = async (values) => {
     console.log("Received values of form: ", values);
+    setIsLoading(true);
     if (values.password !== values.passwordConfirm) {
       showNotification("error", "Password does not match!");
       return;
@@ -15,7 +18,7 @@ const registerForm = (props) => {
 
     const data = {
       ...values,
-      role: 2,
+      role: 0,
       isCreatedAt: new Date(),
     };
 
@@ -25,6 +28,7 @@ const registerForm = (props) => {
       data
     );
     if (result.auth) {
+      setIsLoading(false);
       localStorage.setItem("token", result.accessToken);
       props.history.push("/home");
     } else {
@@ -132,6 +136,11 @@ const registerForm = (props) => {
             placeholder="Confirm Password"
           />
         </Form.Item>
+        {isLoading ? (
+          <div className="loading-spinner">
+            <Spin size="large" />
+          </div>
+        ) : null}
         <Form.Item className="button-row">
           <Button
             type="primary"
@@ -140,6 +149,7 @@ const registerForm = (props) => {
           >
             Register
           </Button>
+
           <div style={{ margin: "15px 0px", textAlign: "center" }}>Or</div>
           <Button type="dashed" onClick={handleLoginClick}>
             Log in
@@ -150,4 +160,4 @@ const registerForm = (props) => {
   );
 };
 
-export default registerForm;
+export default RegisterForm;

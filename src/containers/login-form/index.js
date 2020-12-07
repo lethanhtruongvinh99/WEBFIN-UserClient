@@ -1,5 +1,5 @@
-import React from "react";
-import { Form, Input, Button, Checkbox, Divider } from "antd";
+import React, { useEffect, useState } from "react";
+import { Form, Input, Button, Checkbox, Divider, Spin } from "antd";
 import {
   UserOutlined,
   LockOutlined,
@@ -11,8 +11,13 @@ import showNotification from "../../utils/NotificationUtils";
 import "./index.css";
 
 const LoginForm = (props) => {
+  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    console.log("Login Form");
+  }, []);
   const onFinish = async (values) => {
     console.log("Received values of form: ", values);
+    setIsLoading(true);
     const data = {
       ...values,
     };
@@ -22,7 +27,9 @@ const LoginForm = (props) => {
       "post",
       data
     );
+    // console.log(result);
     if (result.auth) {
+      setIsLoading(false);
       localStorage.setItem("token", result.accessToken);
       props.history.push("/home");
     } else {
@@ -103,7 +110,11 @@ const LoginForm = (props) => {
             Forgot password
           </a>
         </Form.Item>
-
+        {isLoading ? (
+          <div className="loading-spinner">
+            <Spin size="large" />
+          </div>
+        ) : null}
         <Form.Item className="button-row">
           <Button
             type="primary"
