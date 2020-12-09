@@ -3,7 +3,6 @@ import { React, useEffect, useState } from "react";
 import Connect from "../../api";
 
 const Homepage = (props) => {
-  const ENDPOINT = "localhost:8080/";
   useEffect(() => {
     const accessToken = localStorage.getItem('token');
     if (!accessToken) {
