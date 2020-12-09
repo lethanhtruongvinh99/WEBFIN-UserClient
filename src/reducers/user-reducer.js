@@ -1,7 +1,8 @@
-import { USER_LOGIN } from "../constants/action-types";
+import { USER_LOGIN, ONLINE_USERS_CHANGED } from "../constants/action-types";
 
 const initialState = {
 	token: "",
+	onlineUsers: [],
 };
 
 const userReducer = (state = initialState, action) =>
@@ -11,9 +12,16 @@ const userReducer = (state = initialState, action) =>
 		case USER_LOGIN: {
 			const token = action.payload;
 			const newState = {
-				...initialState,
+				...state,
 				token: token,
 			};
+			return newState;
+		}
+		case ONLINE_USERS_CHANGED: {
+			const newState = {
+				...state,
+				onlineUsers: action.payload,
+			}
 			return newState;
 		}
 		default: {
