@@ -11,10 +11,13 @@ import showNotification from "../../utils/NotificationUtils";
 import "./index.css";
 
 const LoginForm = (props) => {
+
   const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     console.log("Login Form");
   }, []);
+
   const onFinish = async (values) => {
     console.log("Received values of form: ", values);
     setIsLoading(true);
@@ -41,6 +44,14 @@ const LoginForm = (props) => {
     props.history.push("/register");
   };
 
+  const handleFacebookLogin = () => {
+    window.open(process.env.REACT_APP_HOST_NAME + '/auth/facebook', '_self');
+  };
+
+  const handleGoogleLogin = () => {
+    window.open(process.env.REACT_APP_HOST_NAME + '/auth/google', '_self');
+  };
+
   return (
     <div className="login-container">
       <h1 style={{ textAlign: "center", margin: "40px 0px", fontSize: "32px" }}>
@@ -56,6 +67,7 @@ const LoginForm = (props) => {
       >
         <Button
           type="primary"
+          onClick = {handleGoogleLogin}
           danger
           className="login-form-button"
           style={{ margin: "10px 0px" }}
@@ -65,6 +77,7 @@ const LoginForm = (props) => {
         </Button>
         <Button
           type="primary"
+          onClick = {handleFacebookLogin}
           className="login-form-button"
           style={{ margin: "10px 0px" }}
           icon={<FacebookFilled />}

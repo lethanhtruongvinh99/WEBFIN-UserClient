@@ -1,19 +1,16 @@
 import { Button } from "antd";
 import { React, useEffect, useState } from "react";
 import Connect from "../../api";
-import openSocket from "socket.io-client";
 
 const Homepage = (props) => {
   const ENDPOINT = "localhost:8080/";
   useEffect(() => {
     const accessToken = localStorage.getItem('token');
-    console.log("abc");
-    console.log(accessToken);
     if (!accessToken) {
       props.history.push("/login");
     }
     // Connect();
-    const socket = openSocket(ENDPOINT);
+    const socket = Connect();
     console.log(socket);
     socket.emit("login", { token: accessToken });
   }, []);
