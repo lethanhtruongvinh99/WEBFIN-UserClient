@@ -30,7 +30,7 @@ const Homepage = (props) => {
   };
   return (
     <div>
-      <h1>Welcome</h1>
+      <h1>Online Users</h1>
       {onlineUsers.map(item => (<div>{item.username}</div>))}
       <Button type="danger" onClick={handleLogoutClick}>
         Log out
