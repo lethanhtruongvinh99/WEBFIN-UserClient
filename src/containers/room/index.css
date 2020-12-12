@@ -1,42 +1,74 @@
-.chat-box{
-    max-width: 25vw;
-    min-width: 25vw;
-    position: fixed;
-    right: 40px;
-    height: 100%;
+.chat-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 25vw;
+  min-width: 25vw;
+  position: fixed;
+  right: 40px;
+  height: 100%;
+}
+
+.info-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
 }
 
 .playing-area {
-    margin-left: 40px;
+  margin-left: 40px;
 }
 
 .room-row {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 100px;
-    left: 0;
-    right: 0;
+  width: 100%;
+  height: 90%;
+  position: absolute;
+  top: 50px;
+  left: 0;
+  right: 0;
 }
 
-.message-container {
-    height: 65%;
-    border: 0.5px solid rgb(223, 223, 223);
-    border-radius: 20px;
-    overflow: hidden;
-    padding: 20px 20px;
-    scroll-behavior: smooth;
+.message-container,
+.info-container {
+  height: 65%;
+  border: 0.5px solid rgb(223, 223, 223);
+  border-radius: 20px;
+  overflow: hidden;
+  padding: 20px 20px;
+  scroll-behavior: smooth;
 }
 
 .message-container-inner {
-    height: 100% ;
-    overflow-y: scroll;
+  height: 100%;
+  overflow-y: scroll;
 }
 
-.message-input-box {
-    margin-top: 20px;
-    height: 20%;
-    border: 0.5px solid rgb(223, 223, 223);
-    border-radius: 20px;
-    margin-bottom: 20px;
+.message-input-box,
+.general-info {
+  margin-top: 20px;
+  height: 10%;
+  border: 0.5px solid rgb(223, 223, 223);
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+
+.general-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  border: none;
+  margin-top: 40px;
+}
+
+.info-container {
+  height: 72%;
+  overflow-y: scroll;
+  border: none;
+  box-shadow: 0px 5px 15px rgb(218, 218, 218);
+}
+
+::-webkit-scrollbar {
+  width: 0px; /* Remove scrollbar space */
+  background: transparent; /* Optional: just make scrollbar invisible */
 }

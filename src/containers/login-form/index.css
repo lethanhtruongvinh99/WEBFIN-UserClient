@@ -1,6 +1,6 @@
 @import "~antd/dist/antd.css";
 
-#root {
+.login-container {
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -11,14 +11,16 @@
 .login-container {
   margin: auto;
 }
+
 .login-form {
-  margin: auto;
   min-width: 400px;
   max-width: 500px;
 }
+
 .login-form-forgot {
   float: right;
 }
+
 .ant-col-rtl .login-form-forgot {
   float: left;
 }

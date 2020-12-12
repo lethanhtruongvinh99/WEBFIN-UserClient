@@ -1,4 +1,5 @@
-import {
+import
+{
   Button,
   Input,
   Empty,
@@ -8,8 +9,9 @@ import {
   Tooltip,
   Layout,
   Typography,
+  Statistic
 } from "antd";
-import { PlusOutlined, EnterOutlined } from "@ant-design/icons";
+import { BulbOutlined } from "@ant-design/icons";
 import { React, useEffect, useState } from "react";
 import { socket } from "../../api";
 import { connect } from "react-redux";
@@ -18,25 +20,45 @@ import Header from "../../components/header/index";
 import { onlineUsersChanged } from "../../actions/user-actions";
 import "./index.css";
 import TextArea from "antd/lib/input/TextArea";
+import Move from '../../components/move/index';
 
 const { Sider } = Layout;
 const { Text } = Typography;
 
-const Room = (props) => {
+const Room = (props) =>
+{
   return (
-    <div>
+    <div className="room-container">
       <Row>
         <Header history={props.history} />
       </Row>
       <Row className="room-row">
-        <Col className="playing-area" span={8}>
+        <Col className="playing-area" span={11}>
 
         </Col>
-        <Col className="info-area" span={8}>
+        <Col className="info-area" span={5}>
 
+          <Row className="general-info" justify="center" align="middle">
+            <Col span={8}>
+              <Statistic title="Player turn" value="nhatvinh43" />
+            </Col>
+            <Col span={8}>
+              <Statistic title="Symbol" value="X " />
+            </Col>
+          </Row>
+          <Row className="info-container">
+            <Move />
+            <Move />
+            <Move />
+            <Move />
+            <Move />
+            <Move />
+            <Move />
+            <Move />
+            <Move />
+          </Row>
         </Col>
         <Col className="chat-box" span={8}>
-          <h2>Chat box</h2>
           <div className="message-container">
             <div className="message-container-inner">
               <ChatMessage />
@@ -45,7 +67,7 @@ const Room = (props) => {
               <ChatMessage />
             </div>
           </div>
-          <TextArea
+          <TextArea placeholder="Type your message here"
             autoSize={{ minRows: 2, maxRows: 2 }}
             className="message-input-box"
           ></TextArea>

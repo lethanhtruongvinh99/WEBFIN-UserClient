@@ -1,0 +1,15 @@
+.move:hover {
+  background-color: rgb(218, 225, 230);
+}
+
+.move {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 20px;
+  transition-duration: 200ms;
+  transition-duration: 200ms;
+  width: 100%;
+}

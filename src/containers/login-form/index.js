@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Form, Input, Button, Checkbox, Divider, Spin } from "antd";
-import {
-  UserOutlined,
-  LockOutlined,
-  FacebookFilled,
-  GoogleCircleFilled,
-} from "@ant-design/icons";
+import
+  {
+    UserOutlined,
+    LockOutlined,
+    FacebookFilled,
+    GoogleCircleFilled,
+  } from "@ant-design/icons";
 import callServer from "../../utils/NetworkUtils";
 import showNotification from "../../utils/NotificationUtils";
 import { socket } from "../../api";
@@ -14,19 +15,23 @@ import { login } from "../../actions/user-actions";
 import "./index.css";
 
 const mapDispatchToProps = { login };
-const mapStateToProps = (state) => {
+const mapStateToProps = (state) =>
+{
   const { token } = state.user;
   return { token };
 };
 
-const LoginForm = (props) => {
+const LoginForm = (props) =>
+{
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
+  useEffect(() =>
+  {
     console.log("Login Form");
   }, []);
 
-  const onFinish = async (values) => {
+  const onFinish = async (values) =>
+  {
     console.log("Received values of form: ", values);
     setIsLoading(true);
     const data = {
@@ -39,32 +44,37 @@ const LoginForm = (props) => {
       data
     );
     // console.log(result);
-    if (result.auth) {
+    if (result.auth)
+    {
       setIsLoading(false);
       localStorage.setItem("token", result.accessToken);
       props.login(result.accessToken);
       socket.emit("login", { token: result.accessToken });
       props.history.push("/home");
-    } else {
+    } else
+    {
       showNotification("error", result.message);
     }
   };
 
-  const handleRegisterClick = () => {
+  const handleRegisterClick = () =>
+  {
     props.history.push("/register");
   };
 
-  const handleFacebookLogin = () => {
+  const handleFacebookLogin = () =>
+  {
     window.open(process.env.REACT_APP_HOST_NAME + "/auth/facebook", "_self");
   };
 
-  const handleGoogleLogin = () => {
+  const handleGoogleLogin = () =>
+  {
     window.open(process.env.REACT_APP_HOST_NAME + "/auth/google", "_self");
   };
 
   return (
     <div className="login-container">
-      <h1 style={{ textAlign: "center", margin: "40px 0px", fontSize: "32px" }}>
+      <h1 style={{ textAlign: "center", fontSize: "32px" }}>
         Login
       </h1>
       <Form

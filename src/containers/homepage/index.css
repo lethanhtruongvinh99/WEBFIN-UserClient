@@ -1,20 +1,39 @@
 .input {
-    border-radius: 20px;
-    margin: 32px auto;
-    width: 500px;
-    height: 40px;
+  border-radius: 20px;
+  margin: 32px auto;
+  width: 500px;
+  height: 40px;
 }
 
 .ant-btn {
-    border-radius: 20px;
-    height: 40px;
+  border-radius: 20px;
+  height: 40px;
 }
 
-.avatar{
-    margin: 10px 10px;
+.avatar {
+  margin: 0px 0px;
 }
 
-.avatar-row{
-    max-width: 500px;
-    overflow:auto;
+.avatar-row {
+  max-width: 500px;
+  overflow: auto;
+}
+
+.board-modal {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.board-form {
+  width: 100%;
+  padding: 0px 20px;
+}
+
+.board-input {
+  height: 40px;
+  border-radius: 20px;
 }
