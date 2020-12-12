@@ -1,0 +1,20 @@
+.input {
+    border-radius: 20px;
+    margin: 32px auto;
+    width: 500px;
+    height: 40px;
+}
+
+.ant-btn {
+    border-radius: 20px;
+    height: 40px;
+}
+
+.avatar{
+    margin: 10px 10px;
+}
+
+.avatar-row{
+    max-width: 500px;
+    overflow:auto;
+}

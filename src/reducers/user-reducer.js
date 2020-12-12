@@ -1,4 +1,4 @@
-import { USER_LOGIN, ONLINE_USERS_CHANGED } from "../constants/action-types";
+import { USER_LOGIN, ONLINE_USERS_CHANGED, LOG_OUT } from "../constants/action-types";
 
 const initialState = {
 	token: "",
@@ -24,11 +24,17 @@ const userReducer = (state = initialState, action) =>
 			}
 			return newState;
 		}
+		case LOG_OUT: {
+			const newState = {
+				...state,
+				token: '',
+			}
+			return newState;
+		}
 		default: {
-			break;
+			return state;
 		}
 	}
-	return state;
 };
 
 export default userReducer;

@@ -1,4 +1,4 @@
-import { USER_LOGIN, ONLINE_USERS_CHANGED } from '../constants/action-types';
+import { USER_LOGIN, ONLINE_USERS_CHANGED, LOG_OUT } from '../constants/action-types';
 
 export const login = (payload) =>
 {
@@ -7,4 +7,8 @@ export const login = (payload) =>
 
 export const onlineUsersChanged = (payload) => {
     return { type: ONLINE_USERS_CHANGED, payload: payload };
+}
+
+export const logout = (payload) => {
+    return {type: LOG_OUT, payload: payload};
 }

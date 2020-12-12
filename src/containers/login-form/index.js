@@ -8,10 +8,18 @@ import {
 } from "@ant-design/icons";
 import callServer from "../../utils/NetworkUtils";
 import showNotification from "../../utils/NotificationUtils";
+import { socket } from "../../api";
+import { connect } from "react-redux";
+import { login } from "../../actions/user-actions";
 import "./index.css";
 
-const LoginForm = (props) => {
+const mapDispatchToProps = { login };
+const mapStateToProps = (state) => {
+  const { token } = state.user;
+  return { token };
+};
 
+const LoginForm = (props) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -34,6 +42,8 @@ const LoginForm = (props) => {
     if (result.auth) {
       setIsLoading(false);
       localStorage.setItem("token", result.accessToken);
+      props.login(result.accessToken);
+      socket.emit("login", { token: result.accessToken });
       props.history.push("/home");
     } else {
       showNotification("error", result.message);
@@ -45,11 +55,11 @@ const LoginForm = (props) => {
   };
 
   const handleFacebookLogin = () => {
-    window.open(process.env.REACT_APP_HOST_NAME + '/auth/facebook', '_self');
+    window.open(process.env.REACT_APP_HOST_NAME + "/auth/facebook", "_self");
   };
 
   const handleGoogleLogin = () => {
-    window.open(process.env.REACT_APP_HOST_NAME + '/auth/google', '_self');
+    window.open(process.env.REACT_APP_HOST_NAME + "/auth/google", "_self");
   };
 
   return (
@@ -67,7 +77,7 @@ const LoginForm = (props) => {
       >
         <Button
           type="primary"
-          onClick = {handleGoogleLogin}
+          onClick={handleGoogleLogin}
           danger
           className="login-form-button"
           style={{ margin: "10px 0px" }}
@@ -77,7 +87,7 @@ const LoginForm = (props) => {
         </Button>
         <Button
           type="primary"
-          onClick = {handleFacebookLogin}
+          onClick={handleFacebookLogin}
           className="login-form-button"
           style={{ margin: "10px 0px" }}
           icon={<FacebookFilled />}
@@ -146,4 +156,4 @@ const LoginForm = (props) => {
   );
 };
 
-export default LoginForm;
+export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);

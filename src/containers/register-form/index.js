@@ -4,6 +4,15 @@ import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import "./index.css";
 import callServer from "../../utils/NetworkUtils";
 import showNotification from "../../utils/NotificationUtils";
+import { socket } from "../../api";
+import { connect } from "react-redux";
+import { login } from "../../actions/user-actions";
+
+const mapDispatchToProps = { login };
+const mapStateToProps = (state) => {
+  const { token } = state.user;
+  return { token };
+};
 
 const RegisterForm = (props) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -30,6 +39,8 @@ const RegisterForm = (props) => {
     if (result.auth) {
       setIsLoading(false);
       localStorage.setItem("token", result.accessToken);
+      props.login(result.accessToken);
+      socket.emit("login", { token: result.accessToken });
       props.history.push("/home");
     } else {
       showNotification("error", result.message);
@@ -160,4 +171,4 @@ const RegisterForm = (props) => {
   );
 };
 
-export default RegisterForm;
+export default connect(mapStateToProps, mapDispatchToProps) (RegisterForm);
