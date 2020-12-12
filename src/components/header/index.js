@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import { PageHeader, Button } from "antd";
+import { PageHeader, Button, Tooltip, Avatar } from "antd";
 import "./index.css";
 import { connect } from "react-redux";
 import { socket } from "../../api";
@@ -49,7 +49,19 @@ const Header = (props) => {
         onBack={() => window.history.back()}
         title="Title"
         subTitle="This is a subtitle"
-        extra={[content]}
+        extra={[<Tooltip title="Example" placement="top">
+        <Avatar className="avatar" size="large">
+          N
+        </Avatar>
+      </Tooltip>,<Tooltip title="Example" placement="top">
+        <Avatar className="avatar" size="large">
+          N
+        </Avatar>
+      </Tooltip>,<Tooltip title="Example" placement="top">
+        <Avatar className="avatar" size="large">
+          N
+        </Avatar>
+      </Tooltip>,content]}
       ></PageHeader>
     </div>
   );

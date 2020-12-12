@@ -1,33 +1,28 @@
-import { Button, Input, Layout, Menu, Row, Col, Avatar, Tooltip } from "antd";
+import { Button, Input, Empty, Row, Col, Avatar, Tooltip } from "antd";
 import { PlusOutlined, EnterOutlined } from "@ant-design/icons";
 import { React, useEffect, useState } from "react";
 import { socket } from "../../api";
 import { connect } from "react-redux";
 import Header from '../../components/header/index'
-import { login, onlineUsersChanged } from "../../actions/user-actions";
+import { onlineUsersChanged } from "../../actions/user-actions";
 import "./index.css";
 
 
-const mapDispatchToProps = { login, onlineUsersChanged };
+const mapDispatchToProps = { onlineUsersChanged };
 const mapStateToProps = (state) => {
-  const { onlineUsers } = state.user;
-  return { onlineUsers };
+  const { onlineUsers, token } = state.user;
+  return { onlineUsers, token };
 };
 
 const Homepage = (props) => {
   useEffect(() => {
-    
-    const accessToken = localStorage.getItem("token");
-    props.login(accessToken);
-
-    socket.emit("login", { token: accessToken });
     socket.on("onlineUsersChanged", (data) => {
       props.onlineUsersChanged(data.onlineUsers);
     });
   }, []);
 
-  let onlineUsers = !props.onlineUsers
-    ? ""
+  let onlineUsers = !props.token
+    ? <Empty description="" />
     : props.onlineUsers.map((item) => (
         <Tooltip title={item.username} placement="top">
           <Avatar className="avatar" size="large">
@@ -35,6 +30,10 @@ const Homepage = (props) => {
           </Avatar>
         </Tooltip>
       ));
+
+      const handleCreateRoom = () => {
+        props.history.push('/room/123');
+      }
 
   return (
     <div>
@@ -54,7 +53,7 @@ const Homepage = (props) => {
           </Button>
         </Col>
         <Col>
-          <Button type="dashed" icon={<PlusOutlined />}>
+          <Button type="dashed" icon={<PlusOutlined />} onClick = {handleCreateRoom}>
             Create a new Room
           </Button>
         </Col>
