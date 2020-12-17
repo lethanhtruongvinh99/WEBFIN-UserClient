@@ -22,18 +22,22 @@ import TextArea from "antd/lib/input/TextArea";
 import Move from "../../components/move/index";
 import { useHistory } from "react-router";
 import callServer from "../../utils/NetworkUtils";
-
+import Board from "../../components/board/index";
+import Square from "../../components/square/index";
+import Game from "../../components/game/index";
 const { Sider } = Layout;
 const { Text } = Typography;
 
 const Room = (props) => {
   const token = localStorage.getItem("token");
+  const [username, setUsername] = useState("");
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [roomId, setRoomId] = useState("");
   const history = useHistory();
   const urlToken = history.location.pathname.split("/");
   const roomIdT = urlToken[urlToken.length - 1];
+
   useEffect(() => {
     // console.log(roomIdT);
     setRoomId(urlToken[urlToken.length - 1]);
@@ -42,6 +46,14 @@ const Room = (props) => {
   useEffect(() => {
     socket.on("message", (response) => {
       setMessages([...messages, response]);
+    });
+  }, []);
+  useEffect(() => {
+    socket.on("Username", (response) => {
+      setUsername(response);
+      console.log("AAAAAAAAAAA");
+      console.log(response);
+      console.log("TEST:" + username);
     });
   }, []);
   const sendMessage = async (e) => {
@@ -67,14 +79,17 @@ const Room = (props) => {
     }
   };
   // console.log(messages);
+  const handleClick = (i) => {};
   return (
     <div className="room-container">
       <Row>
         <Header history={props.history} />
       </Row>
       <Row className="room-row">
-        <Col className="playing-area" span={11}></Col>
-        <Col className="info-area" span={5}>
+        <Col className="playing-area" span={16}>
+          <Game Username={username} size={20}></Game>
+        </Col>
+        {/* <Col className="info-area" span={5}>
           <Row className="general-info" justify="center" align="middle">
             <Col span={8}>
               <Statistic title="Player turn" value="nhatvinh43" />
@@ -94,7 +109,7 @@ const Room = (props) => {
             <Move />
             <Move />
           </Row>
-        </Col>
+        </Col> */}
         <Col className="chat-box" span={8}>
           <div className="message-container">
             <div className="message-container-inner">
