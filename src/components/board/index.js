@@ -17,7 +17,9 @@ import {
 
 function Board(props) {
   const renderSquare = (i) => {
-    return <Square value={props.squares[i]} onClick={() => props.onClick(i)} />;
+    let x = Math.floor(i / props.size);
+    let y = i % props.size;
+    return <Square value={props.squares[x][y]} onClick={() => props.onClick(i)} />;
   };
   const renderRow = (i) => {
     const listcol = [];

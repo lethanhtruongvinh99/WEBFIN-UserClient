@@ -25,73 +25,77 @@ function Game(props) {
   const _history = useHistory();
   const urlToken = _history.location.pathname.split("/");
   const roomIdT = urlToken[urlToken.length - 1];
-  const [move, setMove] = useState([]);
-  const [isMyTurn, setIsMyTurn] = useState({ turn: true });
+  const [isFinish, setIsFinish] = useState(false);
+  const [isMyTurn, setIsMyTurn] = useState(true);
+  //const [turnName, setTurnName] = useState(props.turnName);
   const [state, setState] = useState({
-    squares: Array(props.size ** 2).fill(null),
+    squares: initMatrix(props.size),
     lastMove: -1,
-    stepNumber: 0,
-    xIsNext: true,
   });
+  const username = props.Username;
+  const sizeBoard = props.size;
+  const turnName = props.TurnName;
 
   useEffect(() => {
     socket.on("sendMove", (response) => {
-      setMove([...move, response]);
-      if (response.username !== props.Username) {
-        const i = response.move;
+      // console.log(" ON sendMove ---- Opponent username:", response.username);
+      // console.log(" ON sendMove ---- Opponent turnname:", response.opponentTurnName);
+      if (response.username !== username && isFinish === false) {
         let squares = state.squares;
-        squares[i] = state.xIsNext ? "X" : "O";
+        const i = Math.floor(response.move / sizeBoard);
+        const j = response.move % sizeBoard;
+        squares[i][j] = response.opponentTurnName;
         setState({
           squares: squares,
-          lastMove: i,
+          lastMove: response.move,
         });
+        setIsMyTurn(true);
+        if (calculateWinner(state.squares, state.lastMove)) {
+          setIsFinish(true);
+        }
       }
     });
   }, []);
 
-  const sendMove = async (move) => {
-    socket.emit("sendMove", { roomIdT, move, token });
+  const sendMove = async (move, opponentTurnName) => {
+    socket.emit("sendMove", { roomIdT, move, token, opponentTurnName });
   };
 
   const handleClick = (i) => {
-    const squares = state.squares;
-
-    if (calculateWinner(squares) || squares[i]) {
+    let squares = state.squares;
+    let x = Math.floor(i / squares[0].length);
+    let y = i % squares[0].length;
+    if (
+      !isMyTurn ||
+      isFinish ||
+      calculateWinner(state.squares, state.lastMove) ||
+      squares[x][y]
+    ) {
       return;
     }
-
-    sendMove(i);
-    squares[i] = state.xIsNext ? "X" : "O";
+    squares[x][y] = turnName;
     setState({
       squares,
       lastMove: i,
     });
+    setIsMyTurn(false);
+    if (calculateWinner(squares, i)) {
+      setIsFinish(true);
+    }
+    sendMove(i, turnName);
   };
 
-  const winner = calculateWinner(state.squares);
-
-  //   const moves = history.map((step, move) => {
-  //     const lastMove = step.lastMove;
-  //     const x = Math.floor(lastMove / props.size) + 1;
-  //     const y = (lastMove % props.size) + 1;
-  //     const desc = move
-  //       ? "Go to move #" + "X:" + x + " Y:" + y
-  //       : "Go to game start";
-  //     return (
-  //       <li key={move}>
-  //         <Move comment={desc} />
-  //       </li>
-  //     );
-  //   });
-
-  let status;
-  if (winner) {
-    status = "Winner: " + winner;
-  } else {
-    if (isFull(state.squares)) status = "### DRAW ###";
-    else status = "Next player: " + (state.xIsNext ? "X" : "O");
-  }
-
+  // const winner = calculateWinner(state.squares, state.lastMove);
+  // let status;
+  // if (winner) {
+  //   status = "Winner: " + winner;
+  // } else {
+  //   if (isFull(state.squares)) status = "### DRAW ###";
+  //   else {
+  //     var opponentTurnName = turnName === "X" ? "O" : "X";
+  //     status = "Next player: " + (isMyTurn ? turnName : opponentTurnName);
+  //   }
+  // }
   return (
     <div className="game-area">
       <div className="game-board">
@@ -102,38 +106,87 @@ function Game(props) {
         />
       </div>
       <div className="game-info">
-        <div>{status}</div>
+        {/* <div>{status}</div> */}
         {/* <ol>{moves}</ol> */}
       </div>
     </div>
   );
 }
-function calculateWinner(squares) {
-  const lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
-    }
-  }
+
+function calculateWinner(squares, lastMove) {
+  if (lastMove < 0) return null;
+  var i = Math.floor(lastMove / squares[0].length);
+  var j = lastMove % squares[i].length;
+  var prevTurn = squares[i][j];
+  console.log("CAL WINNER:", checkWin(squares, i, j));
+  if (checkWin(squares, i, j)) return prevTurn;
   return null;
 }
-function isFull(squares) {
-  let cnt = 0;
-  for (let i = 0; i < squares.length; i++) {
-    if (squares[i]) ++cnt;
+
+function isValidCord(sizeBoard, x, y) {
+  return !(x < 0 || x >= sizeBoard || y < 0 || y >= sizeBoard);
+}
+
+// i,j là nước mới đánh
+// return true khi nước cờ (i,j) dành chiến thắng
+//        false khi chưa ai thắng
+function checkWin(squares, i, j) {
+  var prevTurn = squares[i][j];
+  var count = 1;
+  var x = i;
+  var y = j;
+
+  // Thứ tự hướng duyệt:
+  // 1. dọc : xuống, lên
+  // 2. ngang: xuống, lên
+  // 3. chéo chính: xuống, lên
+  // 4. chéo phụ: xuống , lên
+  var dX = [0, 0, 1, -1, 1, -1, -1, 1];
+  var dY = [1, -1, 0, 0, 1, -1, 1, -1];
+
+  // k= 0,1  --> duyệt dọc
+  // k= 2,3  --> duyệt ngang
+  // k= 4,5  --> duyệt chéo chính
+  // k= 6,7  --> duyệt chéo phụ
+  for (var k = 0; k < dX.length; ++k) {
+    // k chẵn thì reset biến count
+    // ví dụ k= 0; k= 1 thì vẫn là duyệt trên 1 cột nên count giữ nguyên để phía dưới cộng dồn
+    if (k % 2 === 0) {
+      count = 1;
+    }
+
+    while (
+      isValidCord(squares[0].length, x + dX[k], y + dY[k]) &&
+      squares[(x += dX[k])][(y += dY[k])] === prevTurn
+    ) {
+      ++count;
+      if (count === 5) {
+        return true;
+      }
+    }
+    // đặt lại giá trị ban đầu để duyệt theo hướng khác
+    x = i;
+    y = j;
   }
-  if (cnt === squares.length) return true;
   return false;
 }
 
+function isFull(squares) {
+  for (let i = 0; i < squares[0].length; i++) {
+    for (let j = 0; j < squares[0].length; j++) {
+      if (squares[i][j]) return false;
+    }
+  }
+  return true;
+}
+function initMatrix(size) {
+  var matrix = [];
+  for (var i = 0; i < size; i++) {
+    matrix[i] = [];
+    for (var j = 0; j < size; j++) {
+      matrix[i][j] = null;
+    }
+  }
+  return matrix;
+}
 export default Game;

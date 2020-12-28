@@ -31,6 +31,7 @@ const { Text } = Typography;
 const Room = (props) => {
   const token = localStorage.getItem("token");
   const [username, setUsername] = useState("");
+  const [turnName, setTurnName] = useState("");
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [roomId, setRoomId] = useState("");
@@ -44,6 +45,12 @@ const Room = (props) => {
     socket.emit("join", { roomIdT, token });
   }, []);
   useEffect(() => {
+    socket.on("turnName", (response) => {
+      console.log("---- SOCKET: ON_turnName: ", response);
+      setTurnName(response);
+    });
+  }, []);
+  useEffect(() => {
     socket.on("message", (response) => {
       setMessages([...messages, response]);
     });
@@ -51,9 +58,9 @@ const Room = (props) => {
   useEffect(() => {
     socket.on("Username", (response) => {
       setUsername(response);
-      console.log("AAAAAAAAAAA");
-      console.log(response);
-      console.log("TEST:" + username);
+      console.log("----Socket: ON Username -----");
+      console.log("RESPONE: ", response);
+      console.log("USERNAME: ", username);
     });
   }, []);
   const sendMessage = async (e) => {
@@ -87,7 +94,7 @@ const Room = (props) => {
       </Row>
       <Row className="room-row">
         <Col className="playing-area" span={16}>
-          <Game Username={username} size={20}></Game>
+          <Game Username={username} size={20} TurnName={turnName}></Game>
         </Col>
         {/* <Col className="info-area" span={5}>
           <Row className="general-info" justify="center" align="middle">
