@@ -38,11 +38,13 @@ const RegisterForm = (props) => {
     );
     if (result.auth) {
       setIsLoading(false);
-      localStorage.setItem("token", result.accessToken);
-      props.login(result.accessToken);
-      socket.emit("login", { token: result.accessToken });
-      props.history.push("/home");
+      // localStorage.setItem("token", result.accessToken);
+      // props.login(result.accessToken);
+      // socket.emit("login", { token: result.accessToken });
+      // props.history.push("/home");
+      showNotification("error", result.message);
     } else {
+      setIsLoading(false);
       showNotification("error", result.message);
     }
   };

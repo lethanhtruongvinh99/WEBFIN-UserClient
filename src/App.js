@@ -13,6 +13,8 @@ import
   Route,
   Redirect
 } from 'react-router-dom';
+import Verify from './containers/verify-account';
+import RecoveryPassword from './containers/recovery-password';
 
 function App()
 {
@@ -24,6 +26,8 @@ function App()
         <Route exact path="/home" component={Homepage} />
         <Route exact path="/login" component={LoginForm} />
         <Route exact path="/register" component={RegisterForm} />
+        <Route exact path="/verify" component={Verify} />
+        <Route exact path="/recovery" component={RecoveryPassword}/>
         <Route exact path="/">
           <Redirect to="/home" />
         </Route>
