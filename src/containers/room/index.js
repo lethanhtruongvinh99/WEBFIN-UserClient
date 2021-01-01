@@ -1,8 +1,8 @@
 import
 {
   Col,
-  Layout, Row,
-  Typography
+  Row,
+  Statistic
 } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { React, useEffect, useState } from "react";
@@ -13,6 +13,7 @@ import Game from "../../components/game/index";
 import Header from "../../components/header/index";
 import callServer from "../../utils/NetworkUtils";
 import "./index.css";
+import Move from './../../components/move/index';
 
 const Room = (props) =>
 {
@@ -87,25 +88,21 @@ const Room = (props) =>
   // console.log(messages);
   const handleClick = (i) => { };
   return (
-    <div className="room-container">
-      <Row>
-        <Header history={props.history} />
-      </Row>
-      <Row className="room-row">
-        <Col className="playing-area" span={16}>
-          <Game Username={username} size={20} TurnName={turnName}></Game>
-        </Col>
-        {/* <Col className="info-area" span={5}>
-          <Row className="general-info" justify="center" align="middle">
-            <Col span={8}>
+    <div style={{ padding: '50px' }}>
+      <Row justify="space-between" align="middle">
+        <Col span={5}>
+          <Row style={{ height: '10vh' }} justify="space-between" align="middle">
+            <Col>
               <Statistic title="Player turn" value="nhatvinh43" />
             </Col>
-            <Col span={8}>
+            <Col>
               <Statistic title="Symbol" value="X " />
             </Col>
+            <Col>
+              <Statistic title="Time left" value="00:15" />
+            </Col>
           </Row>
-          <Row className="info-container">
-            <Move />
+          <Row style={{ overflowY: 'scroll', height: '60vh' }}>
             <Move />
             <Move />
             <Move />
@@ -115,28 +112,35 @@ const Room = (props) =>
             <Move />
             <Move />
           </Row>
-        </Col> */}
-        <Col className="chat-box" span={8}>
-          <div className="message-container">
-            <div className="message-container-inner">
-              {messages.map((item) => (
-                <ChatMessage
-                  key={item.message}
-                  content={item.message}
-                  username={item.username}
-                />
-              ))}
-            </div>
-          </div>
-          <TextArea
-            placeholder="Type your message here"
-            autoSize={{ minRows: 2, maxRows: 2 }}
-            className="message-input-box"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={(e) => sendMessage(e)}
-            required={true}
-          ></TextArea>
+        </Col>
+
+        <Col className="playing-area">
+          <Game Username={username} size={20} TurnName={turnName}></Game>
+        </Col>
+
+        <Col className="chat-box" span={6}>
+
+          <Row className="message-container">
+            {messages.map((item) => (
+              <ChatMessage
+                key={item.message}
+                content={item.message}
+                username={item.username}
+              />
+            ))}
+          </Row>
+
+          <Row>
+            <TextArea
+              placeholder="Type your message here"
+              autoSize={{ minRows: 2, maxRows: 2 }}
+              className="message-input-box"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onPressEnter={(e) => sendMessage(e)}
+              required={true} />
+          </Row>
+
         </Col>
       </Row>
     </div>

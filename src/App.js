@@ -9,9 +9,9 @@ import AuthRedirect from './containers/auth-redirect/index';
 import LoginForm from './containers/login-form/index';
 import RecoveryPassword from './containers/recovery-password';
 import RegisterForm from './containers/register-form/index';
-import Layout from './containers/the-layout/';
 import Verify from './containers/verify-account';
 import { history } from './history';
+import LayoutCustom from './containers/the-layout/index';
 
 
 function App()
@@ -24,7 +24,7 @@ function App()
         <Route exact path="/register" component={RegisterForm} />
         <Route exact path="/verify" component={Verify} />
         <Route exact path="/recovery" component={RecoveryPassword} />
-        <Route path="/" component={Layout} />
+        <Route path="/" component={LayoutCustom} />
       </Switch>
     </Router>
 

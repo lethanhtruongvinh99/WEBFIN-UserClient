@@ -2,7 +2,9 @@ import { React, useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { socket } from "../../api";
 import Board from "../../components/board/index";
+import { Col, Row, Statistic } from 'antd';
 import "./index.css";
+import Move from './../move/index';
 
 
 function Game(props)
@@ -91,19 +93,13 @@ function Game(props)
   //   }
   // }
   return (
-    <div className="game-area">
-      <div className="game-board">
-        <Board
-          squares={state.squares}
-          onClick={(i) => handleClick(i)}
-          size={props.size}
-        />
-      </div>
-      <div className="game-info">
-        {/* <div>{status}</div> */}
-        {/* <ol>{moves}</ol> */}
-      </div>
-    </div>
+    <Col className="game-area">
+      <Board
+        squares={state.squares}
+        onClick={(i) => handleClick(i)}
+        size={props.size}
+      />
+    </Col>
   );
 }
 

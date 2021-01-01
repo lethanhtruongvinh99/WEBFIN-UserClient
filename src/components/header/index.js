@@ -18,7 +18,7 @@ const mapStateToProps = (state) =>
 const mapDispatchToProps = { logout };
 
 
-const Header = (props) =>
+const HeaderCustom = (props) =>
 {
 
   const [activeKey, setActiveKey] = useState('home');
@@ -28,17 +28,17 @@ const Header = (props) =>
     socket.emit("logout", {});
     props.logout();
     localStorage.removeItem("token");
-    props.history.push("/home");
+    history.push("/home");
   };
 
   const handleLoginClick = () =>
   {
-    props.history.push("/login");
+    history.push("/login");
   };
 
   const handleRegisterClick = () =>
   {
-    props.history.push("/register");
+    history.push("/register");
   }
 
   const logout = [
@@ -70,9 +70,11 @@ const Header = (props) =>
         extra={[
           <Row gutter={45} align="middle">
             <Col style={{ margin: 'auto' }}>
-              <Tabs activeKey={activeKey} centered size="large" onTabClick={(key) => { setActiveKey(key); history.push('/' + key) }}>
+              <Tabs style={{ marginTop: '15px' }} activeKey={activeKey} centered size="large" onTabClick={(key) => { setActiveKey(key); history.push('/' + key) }}>
                 <TabPane tab="Tham gia" key="home" />
                 <TabPane tab="Phòng chơi" key="rooms" />
+                <TabPane tab="Xếp hạng" key="leaderboard" />
+                <TabPane tab="Lịch sử" key="history" />
               </Tabs>
             </Col>
             {props.isInRoom ? <Col>
@@ -101,4 +103,4 @@ const Header = (props) =>
   );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default connect(mapStateToProps, mapDispatchToProps)(HeaderCustom);
