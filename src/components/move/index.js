@@ -1,20 +1,17 @@
-import React from "react";
-import moment from "moment";
-import "./index.css";
-import {
-  Button,
-  Input,
-  Empty,
-  Row,
-  Col,
+import
+{
   Avatar,
-  Tooltip,
-  Layout,
-  Typography,
-  Comment,
-} from "antd";
 
-const Move = (props) => {
+
+
+  Comment, Tooltip
+} from "antd";
+import moment from "moment";
+import React from "react";
+import "./index.css";
+
+const Move = (props) =>
+{
   return (
     <Comment
       className="move"

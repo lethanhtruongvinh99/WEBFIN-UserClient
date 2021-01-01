@@ -1,34 +1,21 @@
-import {
-  Button,
-  Input,
-  Empty,
-  Row,
+import
+{
   Col,
-  Avatar,
-  Tooltip,
-  Layout,
-  Typography,
-  Statistic,
+  Layout, Row,
+  Typography
 } from "antd";
-import { BulbOutlined } from "@ant-design/icons";
-import { React, useEffect, useState } from "react";
-import { socket } from "../../api";
-import { connect } from "react-redux";
-import ChatMessage from "../../components/chat-messages/index";
-import Header from "../../components/header/index";
-import { onlineUsersChanged } from "../../actions/user-actions";
-import "./index.css";
 import TextArea from "antd/lib/input/TextArea";
-import Move from "../../components/move/index";
+import { React, useEffect, useState } from "react";
 import { useHistory } from "react-router";
-import callServer from "../../utils/NetworkUtils";
-import Board from "../../components/board/index";
-import Square from "../../components/square/index";
+import { socket } from "../../api";
+import ChatMessage from "../../components/chat-messages/index";
 import Game from "../../components/game/index";
-const { Sider } = Layout;
-const { Text } = Typography;
+import Header from "../../components/header/index";
+import callServer from "../../utils/NetworkUtils";
+import "./index.css";
 
-const Room = (props) => {
+const Room = (props) =>
+{
   const token = localStorage.getItem("token");
   const [username, setUsername] = useState("");
   const [turnName, setTurnName] = useState("");
@@ -39,54 +26,66 @@ const Room = (props) => {
   const urlToken = history.location.pathname.split("/");
   const roomIdT = urlToken[urlToken.length - 1];
 
-  useEffect(() => {
+  useEffect(() =>
+  {
     // console.log(roomIdT);
     setRoomId(urlToken[urlToken.length - 1]);
     socket.emit("join", { roomIdT, token });
   }, []);
-  useEffect(() => {
-    socket.on("turnName", (response) => {
+  useEffect(() =>
+  {
+    socket.on("turnName", (response) =>
+    {
       console.log("---- SOCKET: ON_turnName: ", response);
       setTurnName(response);
     });
   }, []);
-  useEffect(() => {
-    socket.on("message", (response) => {
+  useEffect(() =>
+  {
+    socket.on("message", (response) =>
+    {
       setMessages([...messages, response]);
     });
   }, []);
-  useEffect(() => {
-    socket.on("Username", (response) => {
+  useEffect(() =>
+  {
+    socket.on("Username", (response) =>
+    {
       setUsername(response);
       console.log("----Socket: ON Username -----");
       console.log("RESPONE: ", response);
       console.log("USERNAME: ", username);
     });
   }, []);
-  const sendMessage = async (e) => {
-    if (e.keyCode === 13) {
+  const sendMessage = async (e) =>
+  {
+    if (e.keyCode === 13)
+    {
       console.log(roomIdT + " " + message);
-      if (message) {
+      if (message)
+      {
         const result = await callServer(
           process.env.REACT_APP_HOST_NAME + "/message/add",
           "post",
           { roomId: roomIdT, content: message }
         );
         console.log(result);
-        if (result.status === 200) {
+        if (result.status === 200)
+        {
           const tmpMsg = { message: result.content, username: result.username };
           setMessages([...messages, tmpMsg]);
           socket.emit("sendMessage", { roomIdT, message, token });
         }
         // console.log(message);
         setMessage("");
-      } else {
+      } else
+      {
         // console.log("null");
       }
     }
   };
   // console.log(messages);
-  const handleClick = (i) => {};
+  const handleClick = (i) => { };
   return (
     <div className="room-container">
       <Row>

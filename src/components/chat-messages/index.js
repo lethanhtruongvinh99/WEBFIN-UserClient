@@ -1,19 +1,16 @@
-import React from "react";
-import moment from "moment";
-import {
-  Button,
-  Input,
-  Empty,
-  Row,
-  Col,
+import
+{
   Avatar,
-  Tooltip,
-  Layout,
-  Typography,
-  Comment,
-} from "antd";
 
-const ChatMessage = (props) => {
+
+
+  Comment, Tooltip
+} from "antd";
+import moment from "moment";
+import React from "react";
+
+const ChatMessage = (props) =>
+{
   return (
     <Comment
       author={<a>{props.username}</a>}

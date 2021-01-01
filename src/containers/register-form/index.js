@@ -9,18 +9,22 @@ import { connect } from "react-redux";
 import { login } from "../../actions/user-actions";
 
 const mapDispatchToProps = { login };
-const mapStateToProps = (state) => {
+const mapStateToProps = (state) =>
+{
   const { token } = state.user;
   return { token };
 };
 
-const RegisterForm = (props) => {
+const RegisterForm = (props) =>
+{
   const [isLoading, setIsLoading] = useState(false);
 
-  const onFinish = async (values) => {
+  const onFinish = async (values) =>
+  {
     console.log("Received values of form: ", values);
     setIsLoading(true);
-    if (values.password !== values.passwordConfirm) {
+    if (values.password !== values.passwordConfirm)
+    {
       showNotification("error", "Password does not match!");
       return;
     }
@@ -36,20 +40,23 @@ const RegisterForm = (props) => {
       "post",
       data
     );
-    if (result.auth) {
+    if (result.auth)
+    {
       setIsLoading(false);
       // localStorage.setItem("token", result.accessToken);
       // props.login(result.accessToken);
       // socket.emit("login", { token: result.accessToken });
       // props.history.push("/home");
-      showNotification("error", result.message);
-    } else {
+      showNotification("success", result.message);
+    } else
+    {
       setIsLoading(false);
       showNotification("error", result.message);
     }
   };
 
-  const handleLoginClick = () => {
+  const handleLoginClick = () =>
+  {
     props.history.push("/login");
   };
 
@@ -173,4 +180,4 @@ const RegisterForm = (props) => {
   );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps) (RegisterForm);
+export default connect(mapStateToProps, mapDispatchToProps)(RegisterForm);
