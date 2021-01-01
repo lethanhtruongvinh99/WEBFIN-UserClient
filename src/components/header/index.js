@@ -63,6 +63,7 @@ const Header = (props) =>
       <PageHeader
         className="header"
         ghost={false}
+        style={{ zIndex: '1' }}
         onBack={() => window.history.back()}
         title="Title"
         subTitle="This is a subtitle"

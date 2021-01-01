@@ -1,6 +1,10 @@
-.header{
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
+.header {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+}
+
+.ant-tabs-tab {
+  border: none;
 }

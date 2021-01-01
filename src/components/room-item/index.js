@@ -7,11 +7,11 @@ const { Meta } = Card;
 const RoomItem = (props) =>
 {
     return (
-        <Col >
+        <Col span={4}>
             <Card className="room-card"
                 hoverable
                 cover={
-                    <Image width={250}
+                    <Image
                         alt="placeholder"
                         src="/room-item.jpg"
                     />

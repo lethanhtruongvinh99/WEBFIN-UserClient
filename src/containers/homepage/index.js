@@ -2,32 +2,10 @@ import { EnterOutlined, PlusOutlined } from "@ant-design/icons";
 import
 {
   Avatar, Button,
-
-
-
   Col, Empty,
-
-
-
-
-
-
-
   Form, Input,
-
-
-
-
-
   Modal, Row,
-
-
-
-
-
-
-
-  Tabs, Tooltip
+  Tooltip
 } from "antd";
 import { React, useEffect, useState } from "react";
 import { connect } from "react-redux";
@@ -35,7 +13,7 @@ import { onlineUsersChanged } from "../../actions/user-actions";
 import { socket } from "../../api";
 import callServer from "../../utils/NetworkUtils";
 import "./index.css";
-const { TabPane } = Tabs;
+import QuickJoinButton from './../../components/quick-join-button/index';
 
 const mapDispatchToProps = { onlineUsersChanged };
 const mapStateToProps = (state) =>
@@ -118,6 +96,7 @@ const Homepage = (props) =>
 
   return (
     <div>
+      <QuickJoinButton />
       <Row style={{ marginTop: '45px' }}>
         <h1 style={{ textAlign: "center", margin: "auto" }}>
           Join or Create a Room
