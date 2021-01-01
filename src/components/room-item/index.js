@@ -1,5 +1,5 @@
-import { Card, Avatar, Col } from "antd";
-import { SettingOutlined, EditOutlined, EllipsisOutlined } from "@ant-design/icons";
+import { EnterOutlined, EyeOutlined } from "@ant-design/icons";
+import { Avatar, Card, Col, Image } from "antd";
 import React from 'react';
 import "./index.css";
 const { Meta } = Card;
@@ -11,21 +11,20 @@ const RoomItem = (props) =>
             <Card className="room-card"
                 hoverable
                 cover={
-                    <img
-                        alt="example"
-                        src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+                    <Image width={250}
+                        alt="placeholder"
+                        src="/room-item.jpg"
                     />
                 }
                 actions={[
-                    <SettingOutlined key="setting" />,
-                    <EditOutlined key="edit" />,
-                    <EllipsisOutlined key="ellipsis" />,
+                    props.isFull ? "" : <EnterOutlined key="enter" />,
+                    <EyeOutlined key="watch" />,
                 ]}
             >
                 <Meta
                     avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-                    title="Card title"
-                    description="This is the description"
+                    title={props.host ? props.host : "Username"}
+                    description={props.createdAt ? props.createdAt : "Created 5 minutes ago"}
                 />
             </Card>
         </Col>

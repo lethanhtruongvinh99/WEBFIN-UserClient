@@ -47,7 +47,7 @@ const Header = (props) =>
     </Button>,
   ];
   const loginAndRegister = [
-    <Row gutter={15}>
+    <Row gutter={15} align="middle">
       <Col>
         <Button type="primary" onClick={handleRegisterClick}>Register</Button>
       </Col>
