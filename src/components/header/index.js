@@ -119,7 +119,12 @@ const HeaderCustom = (props) => {
           </Row>,
         ]}
       ></PageHeader>
-      <InviteModal modalOpen={modalOpen} />
+      <InviteModal
+        modalOpen={modalOpen}
+        onClose={() => {
+          setModalOpen(!modalOpen);
+        }}
+      />
     </div>
   );
 };
