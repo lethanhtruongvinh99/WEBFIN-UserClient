@@ -1,9 +1,4 @@
-import
-{
-  Col,
-  Row,
-  Statistic
-} from "antd";
+import { Col, Row, Statistic } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { React, useEffect, useState } from "react";
 import { useHistory } from "react-router";
@@ -13,10 +8,9 @@ import Game from "../../components/game/index";
 import Header from "../../components/header/index";
 import callServer from "../../utils/NetworkUtils";
 import "./index.css";
-import Move from './../../components/move/index';
+import Move from "./../../components/move/index";
 
-const Room = (props) =>
-{
+const Room = (props) => {
   const token = localStorage.getItem("token");
   const [username, setUsername] = useState("");
   const [turnName, setTurnName] = useState("");
@@ -27,71 +21,63 @@ const Room = (props) =>
   const urlToken = history.location.pathname.split("/");
   const roomIdT = urlToken[urlToken.length - 1];
 
-  useEffect(() =>
-  {
+  useEffect(() => {
     // console.log(roomIdT);
     setRoomId(urlToken[urlToken.length - 1]);
     socket.emit("join", { roomIdT, token });
   }, []);
-  useEffect(() =>
-  {
-    socket.on("turnName", (response) =>
-    {
+  useEffect(() => {
+    socket.on("turnName", (response) => {
       console.log("---- SOCKET: ON_turnName: ", response);
       setTurnName(response);
     });
   }, []);
-  useEffect(() =>
-  {
-    socket.on("message", (response) =>
-    {
+  useEffect(() => {
+    socket.on("message", (response) => {
       setMessages([...messages, response]);
     });
   }, []);
-  useEffect(() =>
-  {
-    socket.on("Username", (response) =>
-    {
+  useEffect(() => {
+    socket.on("Username", (response) => {
       setUsername(response);
       console.log("----Socket: ON Username -----");
       console.log("RESPONE: ", response);
       console.log("USERNAME: ", username);
     });
   }, []);
-  const sendMessage = async (e) =>
-  {
-    if (e.keyCode === 13)
-    {
+  const sendMessage = async (e) => {
+    if (e.keyCode === 13) {
       console.log(roomIdT + " " + message);
-      if (message)
-      {
+      if (message) {
         const result = await callServer(
           process.env.REACT_APP_HOST_NAME + "/message/add",
           "post",
           { roomId: roomIdT, content: message }
         );
         console.log(result);
-        if (result.status === 200)
-        {
+        if (result.status === 200) {
           const tmpMsg = { message: result.content, username: result.username };
           setMessages([...messages, tmpMsg]);
           socket.emit("sendMessage", { roomIdT, message, token });
         }
         // console.log(message);
         setMessage("");
-      } else
-      {
+      } else {
         // console.log("null");
       }
     }
   };
   // console.log(messages);
-  const handleClick = (i) => { };
+  const handleClick = (i) => {};
   return (
-    <div style={{ padding: '50px' }}>
+    <div style={{ padding: "200px 50px" }}>
       <Row justify="space-between" align="middle">
         <Col span={5}>
-          <Row style={{ height: '10vh' }} justify="space-between" align="middle">
+          <Row
+            style={{ height: "10vh" }}
+            justify="space-between"
+            align="middle"
+          >
             <Col>
               <Statistic title="Player turn" value="nhatvinh43" />
             </Col>
@@ -102,7 +88,7 @@ const Room = (props) =>
               <Statistic title="Time left" value="00:15" />
             </Col>
           </Row>
-          <Row style={{ overflowY: 'scroll', height: '60vh' }}>
+          <Row style={{ overflowY: "scroll", height: "60vh" }}>
             <Move />
             <Move />
             <Move />
@@ -119,7 +105,6 @@ const Room = (props) =>
         </Col>
 
         <Col className="chat-box" span={6}>
-
           <Row className="message-container">
             {messages.map((item) => (
               <ChatMessage
@@ -138,9 +123,9 @@ const Room = (props) =>
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onPressEnter={(e) => sendMessage(e)}
-              required={true} />
+              required={true}
+            />
           </Row>
-
         </Col>
       </Row>
     </div>

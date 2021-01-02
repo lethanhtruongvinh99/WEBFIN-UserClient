@@ -11,7 +11,7 @@ const QuickJoinButton = (props) =>
     }
 
     return (
-        <Button style={{ position: 'fixed', bottom: '75px', right: '75px', padding: '0px 20px', height: '42px', zIndex: '1' }} loading={loading}
+        <Button style={{ position: 'fixed', bottom: '30px', right: '30px', padding: '0px 20px', height: '42px', zIndex: '1' }} loading={loading}
             onClick={handleQuickJoin} type="primary" shape="circle"><EnterOutlined style={{ display: loading ? 'none' : "inline" }} />Quick join</Button>
     )
 }
