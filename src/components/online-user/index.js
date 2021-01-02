@@ -1,5 +1,7 @@
 import { Row, Col, Avatar, Typography, Button } from "antd";
+import { useState } from "react";
 const OnlineUser = (props) => {
+  const [invited, setInvited] = useState(false);
   return (
     <Row style={{ margin: "30px" }} justify="space-between" align="middle">
       <Col>
@@ -18,7 +20,15 @@ const OnlineUser = (props) => {
         </Row>
       </Col>
       <Col>
-        <Button shape="round">Mời</Button>
+        <Button
+          shape="round"
+          disabled={invited}
+          onClick={() => {
+            setInvited(!invited);
+          }}
+        >
+          {invited ? "Đã mời" : "Mời"}
+        </Button>
       </Col>
     </Row>
   );
