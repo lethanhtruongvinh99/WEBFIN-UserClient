@@ -1,11 +1,14 @@
 import { EnterOutlined, PlusOutlined } from "@ant-design/icons";
-import
-{
-  Avatar, Button,
-  Col, Empty,
-  Form, Input,
-  Modal, Row,
-  Tooltip
+import {
+  Avatar,
+  Button,
+  Col,
+  Empty,
+  Form,
+  Input,
+  Modal,
+  Row,
+  Tooltip,
 } from "antd";
 import { React, useEffect, useState } from "react";
 import { connect } from "react-redux";
@@ -13,34 +16,29 @@ import { onlineUsersChanged } from "../../actions/user-actions";
 import { socket } from "../../api";
 import callServer from "../../utils/NetworkUtils";
 import "./index.css";
-import QuickJoinButton from './../../components/quick-join-button/index';
+import QuickJoinButton from "./../../components/quick-join-button/index";
 
 const mapDispatchToProps = { onlineUsersChanged };
-const mapStateToProps = (state) =>
-{
+const mapStateToProps = (state) => {
   const { onlineUsers, token } = state.user;
   return { onlineUsers, token };
 };
 
-const Homepage = (props) =>
-{
+const Homepage = (props) => {
   const [roomId, setRoomId] = useState("");
   const [isModalVisible, setModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleOk = () =>
-  {
+  const handleOk = () => {
     setModalVisible(false);
   };
 
-  const handleCancel = () =>
-  {
+  const handleCancel = () => {
     setModalVisible(false);
   };
 
-  useEffect(() =>
-  {
-    socket.on("onlineUsersChanged", (data) =>
-    {
+  useEffect(() => {
+    socket.on("onlineUsersChanged", (data) => {
       props.onlineUsersChanged(data.onlineUsers);
     });
   }, []);
@@ -48,22 +46,20 @@ const Homepage = (props) =>
   let onlineUsers = !props.token ? (
     <Empty description="" />
   ) : (
-      props.onlineUsers.map((item) => (
-        <Tooltip title={item.username} placement="top">
-          <Avatar className="avatar" size="large">
-            {item.username.charAt(0).toUpperCase()}
-          </Avatar>
-        </Tooltip>
-      ))
-    );
+    props.onlineUsers.map((item) => (
+      <Tooltip title={item.username} placement="top">
+        <Avatar className="avatar" size="large">
+          {item.username.charAt(0).toUpperCase()}
+        </Avatar>
+      </Tooltip>
+    ))
+  );
 
-  const openCreateRoomModal = () =>
-  {
+  const openCreateRoomModal = () => {
     setModalVisible(true);
   };
 
-  const handleJoinRoom = async () =>
-  {
+  const handleJoinRoom = async () => {
     console.log(roomId);
     //logged in and not logged in
     //the first is logged in case
@@ -74,14 +70,12 @@ const Homepage = (props) =>
       data
     );
     // console.log(result);
-    if (result.status === 200)
-    {
+    if (result.status === 200) {
       props.history.push(`/room/${result._id}`);
     }
   };
 
-  const handleCreateRoom = async (values) =>
-  {
+  const handleCreateRoom = async (values) => {
     const data = { ...values };
     // console.log(data);
     const result = await callServer(
@@ -97,15 +91,15 @@ const Homepage = (props) =>
   return (
     <div>
       <QuickJoinButton />
-      <Row style={{ marginTop: '45px' }}>
+      <Row style={{ marginTop: "45px" }}>
         <h1 style={{ textAlign: "center", margin: "auto" }}>
-          Join or Create a Room
+          Tham gia hoặc tạo phòng
         </h1>
       </Row>
       <Row>
         <Input
           className="input"
-          placeholder="Room ID to join"
+          placeholder="ID của phòng muốn tham gia"
           onChange={(e) => setRoomId(e.target.value)}
         />
       </Row>
@@ -116,7 +110,7 @@ const Homepage = (props) =>
             icon={<EnterOutlined />}
             onClick={() => handleJoinRoom()}
           >
-            Join
+            Tham gia
           </Button>
         </Col>
         <Col>
@@ -125,11 +119,11 @@ const Homepage = (props) =>
             icon={<PlusOutlined />}
             onClick={openCreateRoomModal}
           >
-            Create a new Room
+            Tạo phòng
           </Button>
         </Col>
       </Row>
-      <h2 style={{ textAlign: "center", margin: "30px auto" }}>Online now</h2>
+      <h2 style={{ textAlign: "center", margin: "30px auto" }}>Đang online</h2>
       <Row gutter={[16, 0]} className="avatar-row" justify="center">
         {onlineUsers}
       </Row>
@@ -150,20 +144,56 @@ const Homepage = (props) =>
             className="board-form"
           >
             <Form.Item
+              style={{ marginTop: "15px" }}
               name="roomName"
               rules={[{ required: true, message: "Please input board name!" }]}
             >
               <Input className="board-input" placeholder="Room name" />
             </Form.Item>
+            <Row justify="space-between" gutter={15}>
+              <Col span={12}>
+                <Form.Item name="roomPassword" rules={[{ type: "string" }]}>
+                  <Input
+                    type="password"
+                    className="board-input"
+                    placeholder="Mật khẩu"
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  name="roomTimePerTurn"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng nhập số giây",
+                    },
+                  ]}
+                >
+                  <Input
+                    type="number"
+                    className="board-input"
+                    placeholder="Số giây mỗi lượt"
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
             <Form.Item>
-              <Button style={{ marginBottom: '-60px' }} type="primary" htmlType="submit">
-                Create
+              <Button
+                style={{ marginBottom: "-60px", marginTop: "15px" }}
+                type="primary"
+                loading={loading}
+                onClick={() => {
+                  setLoading(!loading);
+                }}
+                htmlType="submit"
+              >
+                {loading ? "Đang tạo" : "Tạo phòng"}
               </Button>
             </Form.Item>
           </Form>
         </div>
       </Modal>
-
     </div>
   );
 };

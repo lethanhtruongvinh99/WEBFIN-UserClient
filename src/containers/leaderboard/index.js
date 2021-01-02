@@ -10,6 +10,7 @@ const Leaderboard = (props) => {
           <Typography.Title level={2}>Xếp hạng</Typography.Title>
         </Col>
       </Row>
+
       <Row style={{ marginTop: "30px" }} justify="center" gutter={60}>
         <Col>
           <Row justify="center">
