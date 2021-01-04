@@ -5,6 +5,7 @@ import Rooms from "./../rooms/index";
 import HeaderCustom from "./../../components/header/index";
 import Leaderboard from "./../leaderboard/index";
 import History from "./../history/index";
+import UserProfile from './../user-profile/index';
 
 const LayoutCustom = (props) => {
   return (
@@ -16,6 +17,7 @@ const LayoutCustom = (props) => {
         <Route exact path="/room/:id" component={Room} />
         <Route exact path="/leaderboard" component={Leaderboard} />
         <Route exact path="/history" component={History} />
+        <Route exact path="/user/:id" component={UserProfile} />
       </Switch>
     </>
   );
