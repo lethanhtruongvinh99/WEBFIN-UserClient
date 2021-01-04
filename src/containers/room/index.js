@@ -5,7 +5,6 @@ import { useHistory } from "react-router";
 import { socket } from "../../api";
 import ChatMessage from "../../components/chat-messages/index";
 import Game from "../../components/game/index";
-import Header from "../../components/header/index";
 import callServer from "../../utils/NetworkUtils";
 import "./index.css";
 import Move from "./../../components/move/index";

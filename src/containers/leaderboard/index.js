@@ -1,6 +1,6 @@
-import "./index.css";
 import LeaderboardRow from "../../components/leaderboard-row/index";
-const { Row, Col, Typography, Card, Carousel } = require("antd");
+import "./index.css";
+const { Row, Col, Typography, Carousel } = require("antd");
 
 const Leaderboard = (props) => {
   return (
