@@ -1,4 +1,4 @@
-import { Col, Row, Statistic, Typography, Button, Avatar } from "antd";
+import { Col, Row, Statistic, Empty, Button, Avatar } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { React, useEffect, useState } from "react";
 import { useHistory } from "react-router";
@@ -93,8 +93,6 @@ const Room = (props) =>
       console.log(result);
       if (result.status === 200)
       {
-        const tmpMsg = { message: result.content, username: result.username };
-        //setMessages([...messages, tmpMsg]);
         socket.emit("sendMessage", { roomIdT, message, token });
       }
       // console.log(message);
@@ -113,10 +111,10 @@ const Room = (props) =>
               <Avatar size={48} src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
             </Col>
             <Col>
-              <Button type="primary">Bắt đầu trận</Button>
+              <Button disabled={props.token ? false : true} type="primary">Bắt đầu trận</Button>
             </Col>
             <Col>
-              <Button danger>Xin hoà</Button>
+              <Button disabled={props.token ? false : true} danger>Xin hoà</Button>
             </Col>
           </Row>
           <Row
@@ -151,15 +149,15 @@ const Room = (props) =>
         </Col>
 
         <Col className="chat-box" span={6}>
-          <Row id="chatBox" style={{ height: '60vh', overflowY: 'scroll' }}>
+          <Row id="chatBox" style={{ height: '60vh', overflowY: 'scroll' }} justify="center" align={messages.size > 0 ? 'top' : "middle"}>
             <Col>
-              {messages.map((item, index) => (
+              {messages.size > 0 ? messages.map((item, index) => (
                 <ChatMessage
                   key={index}
                   content={item.message}
                   username={item.username}
                 />
-              ))}
+              )) : <Empty />}
             </Col>
           </Row>
 
