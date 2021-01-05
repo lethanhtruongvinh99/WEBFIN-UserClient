@@ -2,6 +2,8 @@ import { EnterOutlined, EyeOutlined } from "@ant-design/icons";
 import { Avatar, Card, Col, Image } from "antd";
 import React from 'react';
 import "./index.css";
+import { connect } from 'react-redux';
+
 const { Meta } = Card;
 
 const RoomItem = (props) =>
@@ -16,10 +18,10 @@ const RoomItem = (props) =>
                         src="/room-item.jpg"
                     />
                 }
-                actions={[
-                    props.isFull ? "" : <EnterOutlined key="enter" />,
+                actions={props.token ? [
+                    <EnterOutlined key="enter" />,
                     <EyeOutlined key="watch" />,
-                ]}
+                ] : [<EyeOutlined key="watch" />,]}
             >
                 <Meta
                     avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
@@ -32,4 +34,11 @@ const RoomItem = (props) =>
     )
 }
 
-export default RoomItem;
+const mapStateToProps = (state) =>
+{
+    return {
+        token: state.user.token,
+    }
+}
+
+export default connect(mapStateToProps)(RoomItem);

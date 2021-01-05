@@ -1,5 +1,6 @@
 import { EnterOutlined, PlusOutlined } from "@ant-design/icons";
-import {
+import
+{
   Avatar,
   Button,
   Col,
@@ -19,26 +20,32 @@ import "./index.css";
 import QuickJoinButton from "./../../components/quick-join-button/index";
 
 const mapDispatchToProps = { onlineUsersChanged };
-const mapStateToProps = (state) => {
+const mapStateToProps = (state) =>
+{
   const { onlineUsers, token } = state.user;
   return { onlineUsers, token };
 };
 
-const Homepage = (props) => {
+const Homepage = (props) =>
+{
   const [roomId, setRoomId] = useState("");
   const [isModalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleOk = () => {
+  const handleOk = () =>
+  {
     setModalVisible(false);
   };
 
-  const handleCancel = () => {
+  const handleCancel = () =>
+  {
     setModalVisible(false);
   };
 
-  useEffect(() => {
-    socket.on("onlineUsersChanged", (data) => {
+  useEffect(() =>
+  {
+    socket.on("onlineUsersChanged", (data) =>
+    {
       props.onlineUsersChanged(data.onlineUsers);
     });
   }, []);
@@ -46,20 +53,22 @@ const Homepage = (props) => {
   let onlineUsers = !props.token ? (
     <Empty description="" />
   ) : (
-    props.onlineUsers.map((item) => (
-      <Tooltip title={item.username} placement="top">
-        <Avatar className="avatar" size="large">
-          {item.username.charAt(0).toUpperCase()}
-        </Avatar>
-      </Tooltip>
-    ))
-  );
+      props.onlineUsers.map((item) => (
+        <Tooltip title={item.username} placement="top">
+          <Avatar className="avatar" size="large">
+            {item.username.charAt(0).toUpperCase()}
+          </Avatar>
+        </Tooltip>
+      ))
+    );
 
-  const openCreateRoomModal = () => {
+  const openCreateRoomModal = () =>
+  {
     setModalVisible(true);
   };
 
-  const handleJoinRoom = async () => {
+  const handleJoinRoom = async () =>
+  {
     console.log(roomId);
     //logged in and not logged in
     //the first is logged in case
@@ -70,12 +79,14 @@ const Homepage = (props) => {
       data
     );
     // console.log(result);
-    if (result.status === 200) {
+    if (result.status === 200)
+    {
       props.history.push(`/room/${result._id}`);
     }
   };
 
-  const handleCreateRoom = async (values) => {
+  const handleCreateRoom = async (values) =>
+  {
     const data = { ...values };
     // console.log(data);
     const result = await callServer(
@@ -93,7 +104,7 @@ const Homepage = (props) => {
       <QuickJoinButton />
       <Row style={{ marginTop: "45px" }}>
         <h1 style={{ textAlign: "center", margin: "auto" }}>
-          Tham gia hoặc tạo phòng
+          Caro Online
         </h1>
       </Row>
       <Row>
@@ -113,7 +124,7 @@ const Homepage = (props) => {
             Tham gia
           </Button>
         </Col>
-        <Col>
+        {props.token ? <Col>
           <Button
             type="dashed"
             icon={<PlusOutlined />}
@@ -121,12 +132,13 @@ const Homepage = (props) => {
           >
             Tạo phòng
           </Button>
-        </Col>
+        </Col> : ""}
       </Row>
-      <h2 style={{ textAlign: "center", margin: "30px auto" }}>Đang online</h2>
-      <Row gutter={[16, 0]} className="avatar-row" justify="center">
-        {onlineUsers}
-      </Row>
+
+      {props.token ? <><h2 style={{ textAlign: "center", margin: "30px auto" }}>Đang online</h2>
+        <Row gutter={[16, 0]} className="avatar-row" justify="center">
+          {onlineUsers}
+        </Row></> : ""}
 
       <Modal
         centered
@@ -136,7 +148,7 @@ const Homepage = (props) => {
         onCancel={handleCancel}
       >
         <div className="board-modal">
-          <h1>New room</h1>
+          <h1>Tạo phòng</h1>
 
           <Form
             onFinish={handleCreateRoom}
@@ -183,7 +195,8 @@ const Homepage = (props) => {
                 style={{ marginBottom: "-60px", marginTop: "15px" }}
                 type="primary"
                 loading={loading}
-                onClick={() => {
+                onClick={() =>
+                {
                   setLoading(!loading);
                 }}
                 htmlType="submit"

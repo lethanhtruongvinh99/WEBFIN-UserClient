@@ -5,10 +5,12 @@ export const login = (payload) =>
     return { type: USER_LOGIN, payload: payload };
 }
 
-export const onlineUsersChanged = (payload) => {
+export const onlineUsersChanged = (payload) =>
+{
     return { type: ONLINE_USERS_CHANGED, payload: payload };
 }
 
-export const logout = (payload) => {
-    return {type: LOG_OUT, payload: payload};
+export const logout = (payload) =>
+{
+    return { type: LOG_OUT, payload: payload };
 }

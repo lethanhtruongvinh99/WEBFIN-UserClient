@@ -1,16 +1,27 @@
 import { Button } from "antd";
 import { EnterOutlined } from "@ant-design/icons";
 import { useState } from "react";
+import { connect } from 'react-redux';
 
-const QuickJoinButton = (props) => {
+const mapStateToProps = (state) =>
+{
+  return {
+    token: state.user.token,
+  }
+}
+
+const QuickJoinButton = (props) =>
+{
   const [loading, setLoading] = useState(false);
-  const handleQuickJoin = () => {
+  const handleQuickJoin = () =>
+  {
     setLoading(!loading);
   };
 
   return (
     <Button
       style={{
+        visibility: props.token ? "visible" : "hidden",
         position: "fixed",
         bottom: "30px",
         right: "30px",
@@ -29,4 +40,4 @@ const QuickJoinButton = (props) => {
   );
 };
 
-export default QuickJoinButton;
+export default connect(mapStateToProps)(QuickJoinButton);

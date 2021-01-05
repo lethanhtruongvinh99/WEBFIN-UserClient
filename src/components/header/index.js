@@ -9,29 +9,30 @@ import InviteModal from "./../invite-modal/index";
 
 const { TabPane } = Tabs;
 
-const mapStateToProps = (state) => {
-  const { token } = state.user;
-  return { token };
-};
+
 
 const mapDispatchToProps = { logout };
 
-const HeaderCustom = (props) => {
+const HeaderCustom = (props) =>
+{
   const [activeKey, setActiveKey] = useState("home");
   const [modalOpen, setModalOpen] = useState(false);
 
-  const handleLogoutClick = () => {
+  const handleLogoutClick = () =>
+  {
     socket.emit("logout", {});
     props.logout();
     localStorage.removeItem("token");
     history.push("/home");
   };
 
-  const handleLoginClick = () => {
+  const handleLoginClick = () =>
+  {
     history.push("/login");
   };
 
-  const handleRegisterClick = () => {
+  const handleRegisterClick = () =>
+  {
     history.push("/register");
   };
 
@@ -42,16 +43,6 @@ const HeaderCustom = (props) => {
   ];
   const loginAndRegister = [
     <Row gutter={15} align="middle">
-      <Col>
-        <Button
-          type="primary"
-          onClick={() => {
-            setModalOpen(!modalOpen);
-          }}
-        >
-          Mời
-        </Button>
-      </Col>
       <Col>
         <Button type="primary" onClick={handleRegisterClick}>
           Đăng ký
@@ -75,45 +66,43 @@ const HeaderCustom = (props) => {
         subTitle="This is a subtitle"
         extra={[
           <Row gutter={45} align="middle">
-            <Col style={{ margin: "auto" }}>
-              <Tabs
-                style={{ marginTop: "15px" }}
-                activeKey={activeKey}
-                centered
-                size="large"
-                onTabClick={(key) => {
-                  setActiveKey(key);
-                  history.push("/" + key);
-                }}
-              >
-                <TabPane tab="Tham gia" key="home" />
-                <TabPane tab="Phòng chơi" key="rooms" />
-                <TabPane tab="Xếp hạng" key="leaderboard" />
-                <TabPane tab="Lịch sử" key="history" />
-              </Tabs>
-            </Col>
-            {props.isInRoom ? (
-              <Col>
-                <Tooltip title="Example" placement="top">
-                  <Avatar className="avatar" size="large">
-                    N
-                  </Avatar>
-                </Tooltip>
-                ,{" "}
-                <Tooltip title="Example" placement="top">
-                  <Avatar className="avatar" size="large">
-                    N
-                  </Avatar>
-                </Tooltip>
-                ,{" "}
-                <Tooltip title="Example" placement="top">
-                  <Avatar className="avatar" size="large">
-                    N
-                  </Avatar>
-                </Tooltip>
+            {props.roomJoined && props.token ? (
+              <Row gutter={45}>
+                <Col>
+                  <Button
+                    type="primary"
+                    onClick={() =>
+                    {
+                      setModalOpen(!modalOpen);
+                    }}
+                  >
+                    Mời
+        </Button>
+                </Col>
+              </Row>
+
+
+            ) : ""}
+            {props.roomJoined ? "" : (
+              <Col style={{ margin: "auto" }}>
+                <Tabs
+                  style={{ marginTop: "15px" }}
+                  activeKey={activeKey}
+                  centered
+                  size="large"
+                  onTabClick={(key) =>
+                  {
+                    setActiveKey(key);
+                    history.push("/" + key);
+                  }}
+                >
+                  <TabPane tab="Tham gia" key="home" />
+                  <TabPane tab="Phòng chơi" key="rooms" />
+                  {props.token ? <><TabPane tab="Xếp hạng" key="leaderboard" />
+                    <TabPane tab="Lịch sử" key="history" /> </>
+                    : ""}
+                </Tabs>
               </Col>
-            ) : (
-              ""
             )}
             <Col>{content}</Col>
           </Row>,
@@ -121,12 +110,20 @@ const HeaderCustom = (props) => {
       ></PageHeader>
       <InviteModal
         modalOpen={modalOpen}
-        onClose={() => {
+        onClose={() =>
+        {
           setModalOpen(!modalOpen);
         }}
       />
     </div>
   );
+};
+
+const mapStateToProps = (state) =>
+{
+  const { token } = state.user;
+  const { roomJoined } = state.header;
+  return { token, roomJoined };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HeaderCustom);
