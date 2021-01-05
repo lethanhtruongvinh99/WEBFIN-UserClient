@@ -1,4 +1,4 @@
-import { Col, Row, Statistic } from "antd";
+import { Col, Row, Statistic, Typography } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { React, useEffect, useState } from "react";
 import { useHistory } from "react-router";
@@ -10,6 +10,8 @@ import "./index.css";
 import Move from "./../../components/move/index";
 import { connect } from 'react-redux';
 import { roomJoined, roomLeft } from './../../actions/header-action';
+import { animateScroll } from "react-scroll";
+
 
 const Room = (props) =>
 {
@@ -39,7 +41,8 @@ const Room = (props) =>
 
     socket.on("message", (response) =>
     {
-      setMessages([...messages, response]);
+      setMessages(messages.concat(response));
+      scrollToBottom();
     });
 
     socket.on("Username", (response) =>
@@ -57,36 +60,47 @@ const Room = (props) =>
 
   }, []);
 
+  function scrollToBottom()
+  {
+    animateScroll.scrollToBottom({
+      containerId: "chatBox"
+    });
+  }
+
 
   const sendMessage = async (e) =>
   {
-    if (e.keyCode === 13)
+    e.preventDefault();
+
+    console.log(roomIdT + " " + message);
+
+    if (message)
     {
-      console.log(roomIdT + " " + message);
-      if (message)
-      {
-        const result = await callServer(
-          process.env.REACT_APP_HOST_NAME + "/message/add",
-          "post",
-          { roomId: roomIdT, content: message }
-        );
-        console.log(result);
-        if (result.status === 200)
-        {
-          const tmpMsg = { message: result.content, username: result.username };
-          setMessages([...messages, tmpMsg]);
-          socket.emit("sendMessage", { roomIdT, message, token });
-        }
-        // console.log(message);
-        setMessage("");
-      } else
-      {
-        // console.log("null");
+      let newMsg = {
+        message,
+        username: 'Tôi',
       }
+      setMessages([...messages, newMsg]);
+      setMessage("");
+
+      scrollToBottom();
+
+      const result = await callServer(
+        process.env.REACT_APP_HOST_NAME + "/message/add",
+        "post",
+        { roomId: roomIdT, content: message }
+      );
+      console.log(result);
+      if (result.status === 200)
+      {
+        const tmpMsg = { message: result.content, username: result.username };
+        //setMessages([...messages, tmpMsg]);
+        socket.emit("sendMessage", { roomIdT, message, token });
+      }
+      // console.log(message);
     }
   };
   // console.log(messages);
-  const handleClick = (i) => { };
   return (
     <div style={{ padding: "200px 50px" }}>
       <Row justify="space-between" align="middle">
@@ -123,18 +137,22 @@ const Room = (props) =>
         </Col>
 
         <Col className="chat-box" span={6}>
-          <Row className="message-container">
-            {messages.map((item) => (
-              <ChatMessage
-                key={item.message}
-                content={item.message}
-                username={item.username}
-              />
-            ))}
+          <Row id="chatBox" style={{ height: '60vh', overflowY: 'scroll' }}>
+            <Col>
+              {messages.map((item, index) => (
+                <ChatMessage
+                  key={index}
+                  content={item.message}
+                  username={item.username}
+                />
+              ))}
+            </Col>
           </Row>
+
 
           <Row>
             <TextArea
+              disabled={props.token ? false : true}
               placeholder="Type your message here"
               autoSize={{ minRows: 2, maxRows: 2 }}
               className="message-input-box"
@@ -150,6 +168,12 @@ const Room = (props) =>
   );
 };
 
+const mapStateToProps = (state) =>
+{
+  return {
+    token: state.user.token,
+  }
+}
 const mapDispatchToProps = { roomJoined, roomLeft };
 
-export default connect(null, mapDispatchToProps)(Room);
+export default connect(mapStateToProps, mapDispatchToProps)(Room);
