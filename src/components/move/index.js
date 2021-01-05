@@ -22,7 +22,7 @@ const Move = (props) =>
           alt="Han Solo"
         />
       }
-      content={<p>{props.comment}</p>}
+      content={<p>{props.comment ? props.comment : "Di chuyển tới (1,3)"}</p>}
       datetime={
         <Tooltip title={moment().format("YYYY-MM-DD HH:mm:ss")}>
           <span>{moment().fromNow()}</span>

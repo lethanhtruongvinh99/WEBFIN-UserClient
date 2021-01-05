@@ -1,4 +1,4 @@
-import { Col, Row, Statistic, Typography } from "antd";
+import { Col, Row, Statistic, Typography, Button, Avatar } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { React, useEffect, useState } from "react";
 import { useHistory } from "react-router";
@@ -105,8 +105,22 @@ const Room = (props) =>
     <div style={{ padding: "200px 50px" }}>
       <Row justify="space-between" align="middle">
         <Col span={5}>
+          <Row justify="center" align="middle" gutter={30}>
+            <Col>
+              <Avatar size={48} src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+            </Col>
+            <Col>
+              <Avatar size={48} src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+            </Col>
+            <Col>
+              <Button type="primary">Bắt đầu trận</Button>
+            </Col>
+            <Col>
+              <Button danger>Xin hoà</Button>
+            </Col>
+          </Row>
           <Row
-            style={{ height: "10vh" }}
+            style={{ height: "10vh", marginTop: '30px' }}
             justify="space-between"
             align="middle"
           >
@@ -120,7 +134,7 @@ const Room = (props) =>
               <Statistic title="Time left" value="00:15" />
             </Col>
           </Row>
-          <Row style={{ overflowY: "scroll", height: "60vh" }}>
+          <Row style={{ overflowY: "scroll", height: "50vh" }}>
             <Move />
             <Move />
             <Move />

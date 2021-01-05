@@ -1,4 +1,4 @@
-import { EnterOutlined, PlusOutlined } from "@ant-design/icons";
+import { EnterOutlined, PlusOutlined, EyeOutlined } from "@ant-design/icons";
 import
 {
   Avatar,
@@ -99,6 +99,11 @@ const Homepage = (props) =>
     props.history.push(`/room/${result._id}`);
   };
 
+  const handleObserving = () =>
+  {
+
+  }
+
   return (
     <div>
       <QuickJoinButton />
@@ -124,6 +129,16 @@ const Homepage = (props) =>
             Tham gia
           </Button>
         </Col>
+
+        <Col>
+          <Button
+            icon={<EyeOutlined />}
+            onClick={() => handleObserving()}
+          >
+            Theo dõi
+          </Button>
+        </Col>
+
         {props.token ? <Col>
           <Button
             type="dashed"
