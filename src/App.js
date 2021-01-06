@@ -12,10 +12,20 @@ import RegisterForm from './containers/register-form/index';
 import Verify from './containers/verify-account';
 import { history } from './history';
 import LayoutCustom from './containers/the-layout/index';
+import { connect } from 'react-redux';
+import { useEffect } from 'react';
+import { login } from './actions/user-actions';
 
-
-function App()
+function App(props)
 {
+  useEffect(() =>
+  {
+    const token = localStorage.getItem('token');
+    if (token)
+    {
+      props.login(token);
+    }
+  }, [])
   return (
     <Router history={history}>
       <Switch>
@@ -31,4 +41,13 @@ function App()
   );
 }
 
-export default App;
+const mapStateToProps = (state) =>
+{
+  return {
+    token: state.user.token,
+  }
+}
+
+const mapDispacthToProps = { login };
+
+export default connect(mapStateToProps, mapDispacthToProps)(App);
