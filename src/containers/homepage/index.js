@@ -1,23 +1,16 @@
-import { EnterOutlined, PlusOutlined, EyeOutlined } from "@ant-design/icons";
-import
-{
-  Avatar,
-  Button,
-  Col,
-  Empty,
-  Form,
-  Input,
-  Modal,
-  Row,
-  Tooltip,
-} from "antd";
+import { EnterOutlined, EyeOutlined, PlusOutlined } from "@ant-design/icons";
+import { Button, Col, Form, Input, Row } from "antd";
 import { React, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { onlineUsersChanged } from "../../actions/user-actions";
 import { socket } from "../../api";
 import callServer from "../../utils/NetworkUtils";
-import "./index.css";
 import QuickJoinButton from "./../../components/quick-join-button/index";
+import showNotification from './../../utils/NotificationUtils';
+import CreateRoomModal from './components/create-room-modal';
+import EnterPasswordModal from './components/enter-password-modal';
+import OnlineUsers from './components/online-users';
+import "./index.css";
 
 const mapDispatchToProps = { onlineUsersChanged };
 const mapStateToProps = (state) =>
@@ -28,19 +21,14 @@ const mapStateToProps = (state) =>
 
 const Homepage = (props) =>
 {
-  const [roomId, setRoomId] = useState("");
+  const [joinButtonLoading, setJoinButtonLoading] = useState(false);
+  const [observerButtonLoading, setObserveButtonLoading] = useState(false);
+  const [joinMode, setJoinMode] = useState('play')
   const [isModalVisible, setModalVisible] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [passwordModalVisible, setPasswordModalVisible] = useState(false);
+  const [roomPassword, setRoomPassword] = useState("");
+  const [roomId, setRoomId] = useState("");
 
-  const handleOk = () =>
-  {
-    setModalVisible(false);
-  };
-
-  const handleCancel = () =>
-  {
-    setModalVisible(false);
-  };
 
   useEffect(() =>
   {
@@ -50,41 +38,61 @@ const Homepage = (props) =>
     });
   }, []);
 
-  let onlineUsers = !props.token ? (
-    <Empty description="" />
-  ) : (
-      props.onlineUsers.map((item) => (
-        <Tooltip title={item.username} placement="top">
-          <Avatar className="avatar" size="large">
-            {item.username.charAt(0).toUpperCase()}
-          </Avatar>
-        </Tooltip>
-      ))
-    );
-
   const openCreateRoomModal = () =>
   {
     setModalVisible(true);
   };
 
-  const handleJoinRoom = async () =>
+  const handleJoinRoom = async (value) =>
   {
-    console.log(roomId);
+
+    if (joinMode === 'play')
+    {
+      setJoinButtonLoading(true);
+    } else setObserveButtonLoading(true);
+
     //logged in and not logged in
     //the first is logged in case
-    const data = { roomId: roomId };
+    const data = { roomId: value.roomId };
     const result = await callServer(
       process.env.REACT_APP_HOST_NAME + "/room/join",
       "post",
       data
     );
     console.log(result);
-    if (result.status === 200)
+    if (result.auth)
     {
       // console.log(result.data._id);
-      props.history.push(`/room/${result.data._id}`);
+      if (result.data.password)
+      {
+        setRoomPassword(result.data.password);
+        setRoomId(result.data._id);
+        setPasswordModalVisible(true);
+      }
+      else props.history.push(`/room/${result.data._id}`);
     }
+    else
+    {
+      showNotification("error", "Không tìm thấy phòng!")
+    }
+
+    if (joinMode === 'play')
+    {
+      setJoinButtonLoading(false);
+    } else setObserveButtonLoading(false);
   };
+
+  const handleEnterPassword = async (value) =>
+  {
+    if (value.roomPassword === roomPassword)
+    {
+      props.history.push(`/room/${roomId}`);
+    }
+    else
+    {
+      showNotification("error", "Sai mật khẩu!")
+    }
+  }
 
   const handleCreateRoom = async (values) =>
   {
@@ -100,11 +108,6 @@ const Homepage = (props) =>
     props.history.push(`/room/${result._id}`);
   };
 
-  const handleObserving = () =>
-  {
-
-  }
-
   return (
     <div>
       <QuickJoinButton />
@@ -114,115 +117,66 @@ const Homepage = (props) =>
         </h1>
       </Row>
       <Row>
-        <Input
-          className="input"
-          placeholder="ID của phòng muốn tham gia"
-          onChange={(e) => setRoomId(e.target.value)}
-        />
-      </Row>
-      <Row gutter={[16, 0]} justify="center">
-        <Col>
-          <Button
-            type="primary"
-            icon={<EnterOutlined />}
-            onClick={() => handleJoinRoom()}
+        <Form onFinish={(e) => { handleJoinRoom(e) }}>
+          <Form.Item
+            name="roomId"
+            rules={[
+              {
+                required: true,
+                message: "Vui lòng nhập Id phòng muốn tham gia",
+              },
+            ]}
           >
-            Tham gia
-          </Button>
-        </Col>
-
-        <Col>
-          <Button
-            icon={<EyeOutlined />}
-            onClick={() => handleObserving()}
-          >
-            Theo dõi
-          </Button>
-        </Col>
-
-        {props.token ? <Col>
-          <Button
-            type="dashed"
-            icon={<PlusOutlined />}
-            onClick={openCreateRoomModal}
-          >
-            Tạo phòng
-          </Button>
-        </Col> : ""}
+            <Input
+              className="input"
+              placeholder="ID của phòng muốn tham gia"
+            />
+          </Form.Item>
+          <Form.Item>
+            <Row gutter={[16, 0]} style={{ marginTop: '15px' }} justify="center">
+              {props.token ? <Col>
+                <Button
+                  loading={joinButtonLoading}
+                  htmlType="submit"
+                  type="primary"
+                  onClick={() => { setJoinMode('play') }}
+                  icon={<EnterOutlined />}
+                >
+                  Tham gia
+</Button>
+              </Col> : ""}
+              <Col>
+                <Button
+                  loading={observerButtonLoading}
+                  htmlType="submit"
+                  icon={<EyeOutlined />}
+                  onClick={() => setJoinMode('observe')}
+                >
+                  Theo dõi
+</Button>
+              </Col>
+              {props.token ? <Col>
+                <Button
+                  type="dashed"
+                  icon={<PlusOutlined />}
+                  onClick={openCreateRoomModal}
+                >
+                  Tạo phòng
+</Button>
+              </Col> : ""}
+            </Row>
+          </Form.Item>
+        </Form>
       </Row>
 
       {props.token ? <><h2 style={{ textAlign: "center", margin: "30px auto" }}>Đang online</h2>
         <Row gutter={[16, 0]} className="avatar-row" justify="center">
-          {onlineUsers}
+          <OnlineUsers onlineUsers={props.onlineUsers} />
         </Row></> : ""}
 
-      <Modal
-        centered
-        footer={[]}
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        <div className="board-modal">
-          <h1>Tạo phòng</h1>
+      <CreateRoomModal isModalVisible={isModalVisible} handleCreateRoom={handleCreateRoom} setModalVisible={setModalVisible} />
+      <EnterPasswordModal passwordModalVisible={passwordModalVisible} handleEnterPassword={handleEnterPassword} setPasswordModalVisible={setPasswordModalVisible} />
 
-          <Form
-            onFinish={handleCreateRoom}
-            name="createBoardForm"
-            className="board-form"
-          >
-            <Form.Item
-              style={{ marginTop: "15px" }}
-              name="roomName"
-              rules={[{ required: true, message: "Please input board name!" }]}
-            >
-              <Input className="board-input" placeholder="Room name" />
-            </Form.Item>
-            <Row justify="space-between" gutter={15}>
-              <Col span={12}>
-                <Form.Item name="roomPassword" rules={[{ type: "string" }]}>
-                  <Input
-                    type="password"
-                    className="board-input"
-                    placeholder="Mật khẩu"
-                  />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  name="roomTimePerTurn"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Vui lòng nhập số giây",
-                    },
-                  ]}
-                >
-                  <Input
-                    type="number"
-                    className="board-input"
-                    placeholder="Số giây mỗi lượt"
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Form.Item>
-              <Button
-                style={{ marginBottom: "-60px", marginTop: "15px" }}
-                type="primary"
-                loading={loading}
-                onClick={() =>
-                {
-                  setLoading(!loading);
-                }}
-                htmlType="submit"
-              >
-                {loading ? "Đang tạo" : "Tạo phòng"}
-              </Button>
-            </Form.Item>
-          </Form>
-        </div>
-      </Modal>
     </div>
   );
 };
