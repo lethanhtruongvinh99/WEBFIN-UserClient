@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Form, Input, Button, Checkbox, Divider, Spin, Modal } from "antd";
-import {
+import
+{
   UserOutlined,
   LockOutlined,
   FacebookFilled,
@@ -14,47 +15,57 @@ import { login } from "../../actions/user-actions";
 import "./index.css";
 
 const mapDispatchToProps = { login };
-const mapStateToProps = (state) => {
+const mapStateToProps = (state) =>
+{
   const { token } = state.user;
   return { token };
 };
 
-const LoginForm = (props) => {
+const LoginForm = (props) =>
+{
   const [isLoading, setIsLoading] = useState(false);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const [recoveryPasswordUsername, setRecoveryPasswordUsername] = useState("");
 
-  const showModal = () => {
+  const showModal = () =>
+  {
     setIsModalVisible(true);
   };
 
-  const handleOk = async () => {
-    const data = {username: recoveryPasswordUsername};
-    const result = await callServer(process.env.REACT_APP_HOST_NAME + '/auth/recoveryrequest', "post", data );
-    if (result.auth) {
+  const handleOk = async () =>
+  {
+    const data = { username: recoveryPasswordUsername };
+    const result = await callServer(process.env.REACT_APP_HOST_NAME + '/auth/recoveryrequest', "post", data);
+    if (result.auth)
+    {
       showNotification("error", result.message);
       setIsModalVisible(false);
-    } else {
+    } else
+    {
       showNotification("error", result.message);
     }
-    
+
   };
 
-  const handleCancel = () => {
+  const handleCancel = () =>
+  {
     setIsModalVisible(false);
   };
 
-  const handleRecoveryUsername = (e) => {
+  const handleRecoveryUsername = (e) =>
+  {
     setRecoveryPasswordUsername(e.target.value);
   }
 
-  useEffect(() => {
+  useEffect(() =>
+  {
     console.log("Login Form");
   }, []);
 
-  const onFinish = async (values) => {
+  const onFinish = async (values) =>
+  {
     console.log("Received values of form: ", values);
     setIsLoading(true);
     const data = {
@@ -67,27 +78,32 @@ const LoginForm = (props) => {
       data
     );
     // console.log(result);
-    if (result.auth) {
+    if (result.auth)
+    {
       setIsLoading(false);
       localStorage.setItem("token", result.accessToken);
       props.login(result.accessToken);
       socket.emit("login", { token: result.accessToken });
       props.history.push("/home");
-    } else {
+    } else
+    {
       setIsLoading(false);
       showNotification("error", result.message);
     }
   };
 
-  const handleRegisterClick = () => {
+  const handleRegisterClick = () =>
+  {
     props.history.push("/register");
   };
 
-  const handleFacebookLogin = () => {
+  const handleFacebookLogin = () =>
+  {
     window.open(process.env.REACT_APP_HOST_NAME + "/auth/facebook", "_self");
   };
 
-  const handleGoogleLogin = () => {
+  const handleGoogleLogin = () =>
+  {
     window.open(process.env.REACT_APP_HOST_NAME + "/auth/google", "_self");
   };
 
@@ -110,7 +126,7 @@ const LoginForm = (props) => {
           style={{ margin: "10px 0px" }}
           icon={<GoogleCircleFilled />}
         >
-          Log in with Google
+          Đăng nhập bằng Google
         </Button>
         <Button
           type="primary"
@@ -119,7 +135,7 @@ const LoginForm = (props) => {
           style={{ margin: "10px 0px" }}
           icon={<FacebookFilled />}
         >
-          Log in with Facebook
+          Đăng nhập bằng Facebook
         </Button>
         <Divider />
         <Form.Item
@@ -133,7 +149,7 @@ const LoginForm = (props) => {
         >
           <Input
             prefix={<UserOutlined className="site-form-item-icon" />}
-            placeholder="Username"
+            placeholder="Tên tài khoản"
           />
         </Form.Item>
         <Form.Item
@@ -148,17 +164,14 @@ const LoginForm = (props) => {
           <Input
             prefix={<LockOutlined className="site-form-item-icon" />}
             type="password"
-            placeholder="Password"
+            placeholder="Mật khẩu"
           />
         </Form.Item>
         <Form.Item>
-          <Form.Item name="remember" valuePropName="checked" noStyle>
-            <Checkbox>Remember me</Checkbox>
-          </Form.Item>
 
-          <p className="login-form-forgot" onClick={showModal}>
-            Forgot password
-          </p>
+          <a href="" className="login-form-forgot" onClick={(e) => { e.preventDefault(); showModal() }}>
+            Quên mật khẩu
+          </a>
         </Form.Item>
         {isLoading ? (
           <div className="loading-spinner">
@@ -171,24 +184,25 @@ const LoginForm = (props) => {
             htmlType="submit"
             className="login-form-button"
           >
-            Log in
+            Đăng nhập
           </Button>
-          <div style={{ margin: "15px 0px", textAlign: "center" }}>Or</div>
+          <div style={{ margin: "15px 0px", textAlign: "center" }}>Hoặc</div>
           <Button type="dashed" onClick={handleRegisterClick}>
-            Register
+            Đăng ký
           </Button>
         </Form.Item>
       </Form>
       <>
         <Modal
-          title="Recovery Password"
+          centered
+          title="Khôi phục mật khẩu"
           visible={isModalVisible}
           onOk={handleOk}
           onCancel={handleCancel}
         >
           <Input
             prefix={<UserOutlined className="site-form-item-icon" />}
-            placeholder="Username" 
+            placeholder="Username"
             onChange={e => handleRecoveryUsername(e)}
           />
         </Modal>
