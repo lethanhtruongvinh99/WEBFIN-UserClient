@@ -78,10 +78,11 @@ const Homepage = (props) =>
       "post",
       data
     );
-    // console.log(result);
+    console.log(result);
     if (result.status === 200)
     {
-      props.history.push(`/room/${result._id}`);
+      // console.log(result.data._id);
+      props.history.push(`/room/${result.data._id}`);
     }
   };
 
