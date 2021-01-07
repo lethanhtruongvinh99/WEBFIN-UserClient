@@ -5,16 +5,15 @@ import { useHistory } from "react-router";
 import { socket } from "../../api";
 import ChatMessage from "../../components/chat-messages/index";
 import Game from "../../components/game/index";
+import Timer from "../../components/timer/index";
 import callServer from "../../utils/NetworkUtils";
 import "./index.css";
 import Move from "./../../components/move/index";
-import { connect } from 'react-redux';
-import { roomJoined, roomLeft } from './../../actions/header-action';
+import { connect } from "react-redux";
+import { roomJoined, roomLeft } from "./../../actions/header-action";
 import { animateScroll } from "react-scroll";
 
-
-const Room = (props) =>
-{
+const Room = (props) => {
   const token = localStorage.getItem("token");
   const [username, setUsername] = useState("");
   const [turnName, setTurnName] = useState("");
@@ -25,74 +24,58 @@ const Room = (props) =>
   const urlToken = history.location.pathname.split("/");
   const roomIdT = urlToken[urlToken.length - 1];
 
-  useEffect(() =>
-  {
-
+  useEffect(() => {
     props.roomJoined([]);
 
     setRoomId(urlToken[urlToken.length - 1]);
     socket.emit("join", { roomIdT, token });
 
-    socket.on("turnName", (response) =>
-    {
+    socket.on("turnName", (response) => {
       console.log("---- SOCKET: ON_turnName: ", response);
       setTurnName(response);
     });
 
-    socket.on("message", (response) =>
-    {
+    socket.on("message", (response) => {
       setMessages(messages.concat(response));
       scrollToBottom();
     });
 
-    socket.on("Username", (response) =>
-    {
+    socket.on("Username", (response) => {
       setUsername(response);
       console.log("----Socket: ON Username -----");
       console.log("RESPONE: ", response);
       console.log("USERNAME: ", username);
     });
 
-    return (() =>
-    {
+    return () => {
       props.roomLeft();
-    })
-
+    };
   }, []);
 
-  function scrollToBottom()
-  {
+  function scrollToBottom() {
     animateScroll.scrollToBottom({
-      containerId: "chatBox"
+      containerId: "chatBox",
     });
   }
 
-
-  const sendMessage = async (e) =>
-  {
+  const sendMessage = async (e) => {
     e.preventDefault();
 
     console.log(roomIdT + " " + message);
 
-    if (message)
-    {
+    if (message) {
       let newMsg = {
         message,
-        username: 'Tôi',
-      }
+        username: "Tôi",
+      };
       setMessages([...messages, newMsg]);
       setMessage("");
 
       scrollToBottom();
 
-      const result = await callServer(
-        process.env.REACT_APP_HOST_NAME + "/message/add",
-        "post",
-        { roomId: roomIdT, content: message }
-      );
+      const result = await callServer(process.env.REACT_APP_HOST_NAME + "/message/add", "post", { roomId: roomIdT, content: message });
       console.log(result);
-      if (result.status === 200)
-      {
+      if (result.status === 200) {
         socket.emit("sendMessage", { roomIdT, message, token });
       }
       // console.log(message);
@@ -111,17 +94,17 @@ const Room = (props) =>
               <Avatar size={48} src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
             </Col>
             <Col>
-              <Button disabled={props.token ? false : true} type="primary">Bắt đầu trận</Button>
+              <Button disabled={props.token ? false : true} type="primary">
+                Bắt đầu trận
+              </Button>
             </Col>
             <Col>
-              <Button disabled={props.token ? false : true} danger>Xin hoà</Button>
+              <Button disabled={props.token ? false : true} danger>
+                Xin hoà
+              </Button>
             </Col>
           </Row>
-          <Row
-            style={{ height: "10vh", marginTop: '30px' }}
-            justify="space-between"
-            align="middle"
-          >
+          <Row style={{ height: "10vh", marginTop: "30px" }} justify="space-between" align="middle">
             <Col>
               <Statistic title="Player turn" value="nhatvinh43" />
             </Col>
@@ -129,7 +112,8 @@ const Room = (props) =>
               <Statistic title="Symbol" value="X " />
             </Col>
             <Col>
-              <Statistic title="Time left" value="00:15" />
+              {/* <Statistic title="Time left" value="00:15" /> */}
+              <Timer />{" "}
             </Col>
           </Row>
           <Row style={{ overflowY: "scroll", height: "50vh" }}>
@@ -149,18 +133,15 @@ const Room = (props) =>
         </Col>
 
         <Col className="chat-box" span={6}>
-          <Row id="chatBox" style={{ height: '60vh', overflowY: 'scroll' }} justify="center" align={messages.size > 0 ? 'top' : "middle"}>
+          <Row id="chatBox" style={{ height: "60vh", overflowY: "scroll" }} justify="center" align={messages.size > 0 ? "top" : "middle"}>
             <Col>
-              {messages.size > 0 ? messages.map((item, index) => (
-                <ChatMessage
-                  key={index}
-                  content={item.message}
-                  username={item.username}
-                />
-              )) : <Empty />}
+              {messages.size > 0 ? (
+                messages.map((item, index) => <ChatMessage key={index} content={item.message} username={item.username} />)
+              ) : (
+                <Empty />
+              )}
             </Col>
           </Row>
-
 
           <Row>
             <TextArea
@@ -180,12 +161,11 @@ const Room = (props) =>
   );
 };
 
-const mapStateToProps = (state) =>
-{
+const mapStateToProps = (state) => {
   return {
     token: state.user.token,
-  }
-}
+  };
+};
 const mapDispatchToProps = { roomJoined, roomLeft };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Room);
