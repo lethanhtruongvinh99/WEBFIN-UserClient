@@ -2,49 +2,51 @@ import React from "react";
 import { useState, useEffect } from "react";
 
 const Timer = (props) => {
-  const [state, setState] = useState({ time: {}, seconds: 0 });
-  const [counter, setCounter] = useState(120);
-  const [isStop, setStop] = useState(false);
+  const [second, setSecond] = useState("00");
+  const [minute, setMinute] = useState("00");
+  const [isActive, setIsActive] = useState(false);
+  const [counter, setCounter] = useState(90);
+
   useEffect(() => {
-    const timer =
-      isStop === false &&
-      counter > 0 &&
-      setInterval(() => {
-        setCounter(counter - 1);
-        setState({
-          time: secondsToTime(counter - 1),
-          seconds: counter - 1,
-        });
+    let intervalId;
+
+    if (isActive) {
+      intervalId = setInterval(() => {
+        const secondCounter = counter % 60;
+        const minuteCounter = Math.floor(counter / 60);
+
+        const computedSecond = String(secondCounter).length === 1 ? `0${secondCounter}` : secondCounter;
+        const computedMinute = String(minuteCounter).length === 1 ? `0${minuteCounter}` : minuteCounter;
+
+        setSecond(computedSecond);
+        setMinute(computedMinute);
+
+        setCounter((counter) => counter - 1);
       }, 1000);
-    return () => clearInterval(timer);
-  }, [state.time]);
+    }
 
-  const stopTimer = () => {
-    setStop(true);
-  };
-  const secondsToTime = (secs) => {
-    let hours = Math.floor(secs / (60 * 60));
+    return () => clearInterval(intervalId);
+  }, [isActive, counter]);
 
-    let divisor_for_minutes = secs % (60 * 60);
-    let minutes = Math.floor(divisor_for_minutes / 60);
-
-    let divisor_for_seconds = divisor_for_minutes % 60;
-    let seconds = Math.ceil(divisor_for_seconds);
-
-    let obj = {
-      h: hours,
-      m: minutes,
-      s: seconds,
-    };
-    return obj;
+  const resetTimer = () => {
+    setIsActive(true);
+    setCounter(90);
   };
   return (
-    <div>
-      {" "}
-      <button onClick={stopTimer}>Stop</button>
-      {state.time.h ? state.time.h + "h : " : ""}
-      {state.time.m? state.time.m + "m : " : ""}
-      {state.time.s? state.time.s + "s" : ""}
+    <div className="container">
+      <div className="time">
+        <span className="minute">{minute}</span>
+        <span>:</span>
+        <span className="second">{second}</span>
+      </div>
+      <div className="buttons">
+        <button onClick={() => setIsActive(!isActive)} className="start">
+          {isActive ? "Pause" : "Start"}
+        </button>
+        <button onClick={resetTimer} className="reset">
+          Reset
+        </button>
+      </div>
     </div>
   );
 };
