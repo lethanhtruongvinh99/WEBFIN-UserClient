@@ -1,4 +1,4 @@
-const callServer = async (path, method, data = {}) =>
+const callServer = async (path, method) =>
 {
     const response = await fetch(path, {
         method: method,
@@ -6,7 +6,6 @@ const callServer = async (path, method, data = {}) =>
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + localStorage.getItem('token'),
         },
-        body: JSON.stringify(data),
     });
 
     return response;

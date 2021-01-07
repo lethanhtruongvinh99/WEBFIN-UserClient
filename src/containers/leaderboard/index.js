@@ -56,7 +56,6 @@ const Leaderboard = (props) => {
 
       <Carousel infinite slidesPerRow={1}>
         <LeaderboardRow />
-        <LeaderboardRow />
       </Carousel>
     </div>
   );

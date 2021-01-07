@@ -3,6 +3,7 @@ import "./index.css";
 import {} from "@ant-design/icons";
 
 const LeaderboardItem = (props) => {
+  // console.log(props.info);
   return (
     <Col>
       <Card hoverable>
@@ -22,7 +23,7 @@ const LeaderboardItem = (props) => {
         <Row justify="center" style={{ marginTop: "15px" }}>
           <Col>
             <Typography.Text>
-              {props.username ? props.username : "JohnDoe"}
+              {props.info.username ? props.info.username : "JohnDoe"}
             </Typography.Text>
           </Col>
         </Row>
@@ -31,7 +32,7 @@ const LeaderboardItem = (props) => {
             <Statistic title="Total matches" value={110} />
           </Col>
           <Col>
-            <Statistic title="Cups won" value={93} />
+            <Statistic title="Cups won" value={props.info.score} />
           </Col>
         </Row>
       </Card>
