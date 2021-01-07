@@ -1,19 +1,33 @@
+import React, { useEffect, useState } from 'react';
 import LeaderboardItem from "../leaderboard-item/index";
-import { Row } from "antd";
+import { Row, Spin } from "antd";
+import callServer from '../../utils/NetwordUtils2';
 
 const contentStyle = {
   height: "300px",
 };
 
 const LeaderboardRow = (props) => {
+  const [topPlayer, setTopPlayer] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(()=> {
+    const getTopPlayer = async () => {
+      const response = await callServer(process.env.REACT_APP_HOST_NAME + "/auth/rankchart", "GET");
+      // console.log(response);
+      const data = await response.json();
+      // console.log(data.rankchart);
+      setTopPlayer(data.rankchart);
+      setIsLoading(false);
+
+    };
+    getTopPlayer();
+  },[]);
   return (
     <div>
       <Row style={contentStyle} justify="center" align="middle" gutter={30}>
-        <LeaderboardItem />
-        <LeaderboardItem />
-        <LeaderboardItem />
-        <LeaderboardItem />
-        <LeaderboardItem />
+        {isLoading ? <Spin /> : null}
+        {topPlayer.length > 0 ? topPlayer.map(item => (<LeaderboardItem info={item}/>)) : null}
       </Row>
     </div>
   );

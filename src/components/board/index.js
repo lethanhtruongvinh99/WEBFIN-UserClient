@@ -8,7 +8,7 @@ function Board(props)
   {
     let x = Math.floor(i / props.size);
     let y = i % props.size;
-    return <Square value={props.squares[x][y]} onClick={() => props.onClick(i)} />;
+    return <Square key={x + ' ' + y} value={props.squares[x][y]} onClick={() => props.onClick(i)} />;
   };
   const renderRow = (i) =>
   {

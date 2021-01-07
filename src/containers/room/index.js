@@ -18,20 +18,27 @@ const Room = (props) => {
   const [username, setUsername] = useState("");
   const [turnName, setTurnName] = useState("");
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState([]);
-  const [roomId, setRoomId] = useState("");
-  const history = useHistory();
-  const urlToken = history.location.pathname.split("/");
-  const roomIdT = urlToken[urlToken.length - 1];
+  const [messages, setMessages] = useState("");
+  const roomId = props.match.params.id;
 
   useEffect(() => {
     props.roomJoined([]);
 
-    setRoomId(urlToken[urlToken.length - 1]);
-    socket.emit("join", { roomIdT, token });
+    const fetchRoomDetails = async () =>
+    {
+      const result = await callServer(process.env.REACT_APP_HOST_NAME + '/room/detail', 'POST', { roomId: roomId })
+      setMessages(result.data.messages)
+      console.log(result);
+    }
 
-    socket.on("turnName", (response) => {
-      console.log("---- SOCKET: ON_turnName: ", response);
+    fetchRoomDetails();
+
+
+    socket.emit("join", { roomId, token });
+
+    socket.on("turnName", (response) =>
+    {
+      //console.log("---- SOCKET: ON_turnName: ", response);
       setTurnName(response);
     });
 
@@ -42,9 +49,9 @@ const Room = (props) => {
 
     socket.on("Username", (response) => {
       setUsername(response);
-      console.log("----Socket: ON Username -----");
-      console.log("RESPONE: ", response);
-      console.log("USERNAME: ", username);
+      // console.log("----Socket: ON Username -----");
+      // console.log("RESPONE: ", response);
+      // console.log("USERNAME: ", username);
     });
 
     return () => {
@@ -61,31 +68,36 @@ const Room = (props) => {
   const sendMessage = async (e) => {
     e.preventDefault();
 
-    console.log(roomIdT + " " + message);
+    //console.log(roomId + " " + message);
 
     if (message) {
       let newMsg = {
-        message,
-        username: "Tôi",
-      };
+        content: message,
+        username: 'Tôi',
+      }
       setMessages([...messages, newMsg]);
       setMessage("");
 
       scrollToBottom();
 
-      const result = await callServer(process.env.REACT_APP_HOST_NAME + "/message/add", "post", { roomId: roomIdT, content: message });
-      console.log(result);
-      if (result.status === 200) {
-        socket.emit("sendMessage", { roomIdT, message, token });
+      const result = await callServer(
+        process.env.REACT_APP_HOST_NAME + "/message/add",
+        "post",
+        { roomId: roomId, content: message }
+      );
+      //console.log(result);
+      if (result.status === 200)
+      {
+        socket.emit("sendMessage", { roomId, message, token });
       }
       // console.log(message);
     }
   };
   // console.log(messages);
   return (
-    <div style={{ padding: "200px 50px" }}>
+    <div style={{ padding: "50px" }}>
       <Row justify="space-between" align="middle">
-        <Col span={5}>
+        <Col xs={24} sm={24} md={5} lg={5} >
           <Row justify="center" align="middle" gutter={30}>
             <Col>
               <Avatar size={48} src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
@@ -116,7 +128,7 @@ const Room = (props) => {
               <Timer />{" "}
             </Col>
           </Row>
-          <Row style={{ overflowY: "scroll", height: "50vh" }}>
+          <Row style={{ overflowY: "scroll", height: "65vh" }}>
             <Move />
             <Move />
             <Move />
@@ -133,13 +145,15 @@ const Room = (props) => {
         </Col>
 
         <Col className="chat-box" span={6}>
-          <Row id="chatBox" style={{ height: "60vh", overflowY: "scroll" }} justify="center" align={messages.size > 0 ? "top" : "middle"}>
+          <Row id="chatBox" style={{ height: '75vh', overflowY: 'scroll' }} align={messages ? 'top' : "middle"}>
             <Col>
-              {messages.size > 0 ? (
-                messages.map((item, index) => <ChatMessage key={index} content={item.message} username={item.username} />)
-              ) : (
-                <Empty />
-              )}
+              {messages ? messages.map((item, index) => (
+                <ChatMessage
+                  key={index}
+                  content={item.content}
+                  username={item.username}
+                />
+              )) : <Empty />}
             </Col>
           </Row>
 

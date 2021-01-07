@@ -6,21 +6,25 @@ import HeaderCustom from "./../../components/header/index";
 import Leaderboard from "./../leaderboard/index";
 import History from "./../history/index";
 import UserProfile from './../user-profile/index';
+import { Layout } from 'antd';
 
 const LayoutCustom = (props) =>
 {
   return (
     <>
       <HeaderCustom />
-      <Switch>
-        <Route exact path="/home" component={Homepage} />
-        <Route exact path="/rooms" component={Rooms} />
-        <Route exact path="/room/:id" component={Room} />
-        <Route exact path="/leaderboard" component={Leaderboard} />
-        <Route exact path="/history" component={History} />
-        <Route exact path="/user/:id" component={UserProfile} />
-        <Redirect from="/" to="/home" />
-      </Switch>
+      <Layout.Content style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+        <Switch>
+          <Route exact path="/home" component={Homepage} />
+          <Route exact path="/rooms" component={Rooms} />
+          <Route exact path="/room/:id" component={Room} />
+          <Route exact path="/leaderboard" component={Leaderboard} />
+          <Route exact path="/history" component={History} />
+          <Route exact path="/user/:id" component={UserProfile} />
+          <Redirect from="/" to="/home" />
+        </Switch>
+      </Layout.Content>
+
     </>
   );
 };

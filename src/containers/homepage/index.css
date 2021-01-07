@@ -1,8 +1,14 @@
 .input {
   border-radius: 20px;
-  margin: 32px auto;
+  margin: 32px auto 0 auto;
   width: 500px;
   height: 40px;
+}
+
+.ant-form-item-explain,
+.ant-form-item-explain-error {
+  text-align: center;
+  margin-top: 15px;
 }
 
 .ant-btn {

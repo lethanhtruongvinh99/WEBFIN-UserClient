@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { PageHeader, Button, Tooltip, Avatar, Tabs, Row, Col } from "antd";
+import { PageHeader, Button, Tooltip, Avatar, Layout, Tabs, Row, Col } from "antd";
 import { history } from "../../history";
 import "./index.css";
 import { connect } from "react-redux";
@@ -56,7 +56,7 @@ const HeaderCustom = (props) =>
   const content = props.token ? logout : loginAndRegister;
 
   return (
-    <div>
+    <Layout.Header>
       <PageHeader
         className="header"
         ghost={false}
@@ -115,7 +115,7 @@ const HeaderCustom = (props) =>
           setModalOpen(!modalOpen);
         }}
       />
-    </div>
+    </Layout.Header>
   );
 };
 
