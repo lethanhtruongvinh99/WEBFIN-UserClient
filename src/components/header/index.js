@@ -6,6 +6,8 @@ import { connect } from "react-redux";
 import { socket } from "../../api";
 import { logout } from "../../actions/user-actions";
 import InviteModal from "./../invite-modal/index";
+import ConfirmInvitationModal from './../confirm-invitation-modal/index';
+
 
 const { TabPane } = Tabs;
 
@@ -15,6 +17,8 @@ const mapDispatchToProps = { logout };
 
 const HeaderCustom = (props) =>
 {
+  const [confirmModalVisible, toggleConfirmModal] = useState(false);
+  const [invitations, setInvitations] = useState([]);
   const [activeKey, setActiveKey] = useState("home");
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -37,9 +41,17 @@ const HeaderCustom = (props) =>
   };
 
   const logout = [
-    <Button danger onClick={handleLogoutClick}>
-      Logout
-    </Button>,
+    <Row gutter={15}>
+      <Col>
+        <Button onClick={() => { toggleConfirmModal(!confirmModalVisible) }}>Lời mời</Button>
+      </Col>
+      <Col>
+        <Button danger type="text" onClick={handleLogoutClick}>
+          Logout
+    </Button>
+      </Col>
+    </Row>
+
   ];
   const loginAndRegister = [
     <Row gutter={15} align="middle">
@@ -115,6 +127,7 @@ const HeaderCustom = (props) =>
           setModalOpen(!modalOpen);
         }}
       />
+      <ConfirmInvitationModal confirmModalVisible={confirmModalVisible} toggleConfirmModal={toggleConfirmModal} />
     </Layout.Header>
   );
 };

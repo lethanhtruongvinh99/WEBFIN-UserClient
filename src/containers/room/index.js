@@ -1,7 +1,6 @@
 import { Col, Row, Statistic, Empty, Button, Avatar } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { React, useEffect, useState } from "react";
-import { useHistory } from "react-router";
 import { socket } from "../../api";
 import ChatMessage from "../../components/chat-messages/index";
 import Game from "../../components/game/index";
@@ -12,6 +11,15 @@ import { connect } from 'react-redux';
 import { roomJoined, roomLeft } from './../../actions/header-action';
 import { animateScroll } from "react-scroll";
 
+let tempMessages = [];
+function scrollToBottom()
+{
+  animateScroll.scrollToBottom({
+    containerId: "chatBox",
+    duration: '0',
+    smooth: false,
+  });
+}
 
 const Room = (props) =>
 {
@@ -19,7 +27,7 @@ const Room = (props) =>
   const [username, setUsername] = useState("");
   const [turnName, setTurnName] = useState("");
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState("");
+  const [messages, setMessages] = useState([]);
   const roomId = props.match.params.id;
 
   useEffect(() =>
@@ -30,14 +38,16 @@ const Room = (props) =>
     const fetchRoomDetails = async () =>
     {
       const result = await callServer(process.env.REACT_APP_HOST_NAME + '/room/detail', 'POST', { roomId: roomId })
-      setMessages(result.data.messages)
+      tempMessages = result.data.messages;
+      setMessages(tempMessages)
+
       console.log(result);
     }
 
     fetchRoomDetails();
 
 
-    socket.emit("join", { roomId, token });
+    socket.emit("join", { roomIdT: roomId, token });
 
     socket.on("turnName", (response) =>
     {
@@ -47,7 +57,10 @@ const Room = (props) =>
 
     socket.on("message", (response) =>
     {
-      setMessages(messages.concat(response));
+      //console.log(response);
+      response.content = response.message;
+      tempMessages = tempMessages.concat([response]);
+      setMessages(tempMessages);
       scrollToBottom();
     });
 
@@ -66,12 +79,7 @@ const Room = (props) =>
 
   }, []);
 
-  function scrollToBottom()
-  {
-    animateScroll.scrollToBottom({
-      containerId: "chatBox"
-    });
-  }
+
 
 
   const sendMessage = async (e) =>
@@ -86,9 +94,9 @@ const Room = (props) =>
         content: message,
         username: 'Tôi',
       }
-      setMessages([...messages, newMsg]);
+      tempMessages = tempMessages.concat([newMsg]);
+      setMessages(tempMessages);
       setMessage("");
-
       scrollToBottom();
 
       const result = await callServer(
@@ -99,6 +107,7 @@ const Room = (props) =>
       //console.log(result);
       if (result.status === 200)
       {
+        console.log('this');
         socket.emit("sendMessage", { roomId, message, token });
       }
       // console.log(message);

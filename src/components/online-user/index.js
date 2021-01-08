@@ -1,7 +1,20 @@
 import { Row, Col, Avatar, Typography, Button } from "antd";
 import { useState } from "react";
-const OnlineUser = (props) => {
+import { socket } from './../../api/index';
+import { connect } from 'react-redux';
+import { useLocation } from "react-router";
+
+const OnlineUser = (props) =>
+{
+  const location = useLocation();
   const [invited, setInvited] = useState(false);
+
+  const handleInvite = () =>
+  {
+    const roomId = (location.pathname.substring(location.pathname.lastIndexOf('/') + 1));
+    socket.emit('sendInvitation', { target: props.username, token: props.token, roomId });
+  }
+
   return (
     <Row style={{ margin: "30px" }} justify="space-between" align="middle">
       <Col>
@@ -23,8 +36,10 @@ const OnlineUser = (props) => {
         <Button
           shape="round"
           disabled={invited}
-          onClick={() => {
-            setInvited(!invited);
+          onClick={() =>
+          {
+            //setInvited(!invited);
+            handleInvite(props.username);
           }}
         >
           {invited ? "Đã mời" : "Mời"}
@@ -33,4 +48,9 @@ const OnlineUser = (props) => {
     </Row>
   );
 };
-export default OnlineUser;
+
+const mapStateToProps = (state) =>
+{
+  return ({ token: state.user.token })
+}
+export default connect(mapStateToProps)(OnlineUser);

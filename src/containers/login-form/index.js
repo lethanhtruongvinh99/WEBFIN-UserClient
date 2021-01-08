@@ -77,7 +77,7 @@ const LoginForm = (props) =>
       "post",
       data
     );
-    // console.log(result);
+    console.log(result);
     if (result.auth)
     {
       setIsLoading(false);
