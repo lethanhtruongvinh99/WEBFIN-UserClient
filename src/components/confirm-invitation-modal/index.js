@@ -24,19 +24,19 @@ const ConfirmInvitationModal = (props) =>
     const handleAcceptInvitation = async (roomId) =>
     {
         const result = await callServer(process.env.REACT_APP_HOST_NAME + '/room/detail', 'post', { roomId: roomId })
-        console.log(result);
+        //console.log(result);
         if (result.status === 200)
         {
             if (result.data.isAvailable)
             {
                 const result = await callServer(process.env.REACT_APP_HOST_NAME + '/room/join', 'post', { roomId: roomId })
-                console.log(result);
+                //console.log(result);
                 if (result.status === 200)
                 {
                     history.push('/room/' + roomId);
 
                     //Delete room Id in invitation list
-                    console.log(props.invitations);
+                    //(props.invitations);
                     let temp = props.invitations.filter(item => item.roomId !== roomId);
                     props.setInvitations(temp);
 

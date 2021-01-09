@@ -41,7 +41,7 @@ const Room = (props) =>
       tempMessages = result.data.messages;
       setMessages(tempMessages)
 
-      console.log(result);
+      //console.log(result);
     }
 
     fetchRoomDetails();
@@ -107,7 +107,7 @@ const Room = (props) =>
       //console.log(result);
       if (result.status === 200)
       {
-        console.log('this');
+        //console.log('this');
         socket.emit("sendMessage", { roomId, message, token });
       }
       // console.log(message);

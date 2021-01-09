@@ -40,7 +40,7 @@ const LayoutCustom = (props) =>
       {
         tmpInvitations = result.data;
         props.setInvitations(tmpInvitations);
-        console.log(result.data);
+        //console.log(result.data);
       }
     }
 
