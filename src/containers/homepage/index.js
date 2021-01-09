@@ -41,7 +41,7 @@ const Homepage = (props) =>
 
     //logged in and not logged in
     //the first is logged in case
-    const data = { roomId: value.roomId };
+    const data = { roomId: value.roomId, joinMode: joinMode };
     const result = await callServer(
       process.env.REACT_APP_HOST_NAME + "/room/join",
       "post",

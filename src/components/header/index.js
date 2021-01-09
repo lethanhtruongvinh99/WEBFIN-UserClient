@@ -1,58 +1,65 @@
 import React, { useState } from "react";
-import { PageHeader, Button, Tooltip, Avatar, Layout, Tabs, Row, Col } from "antd";
+import {
+  PageHeader,
+  Button,
+  Tooltip,
+  Avatar,
+  Layout,
+  Tabs,
+  Row,
+  Col,
+} from "antd";
 import { history } from "../../history";
 import "./index.css";
 import { connect } from "react-redux";
 import { socket } from "../../api";
 import { logout } from "../../actions/user-actions";
 import InviteModal from "./../invite-modal/index";
-import ConfirmInvitationModal from './../confirm-invitation-modal/index';
-import { PlusOutlined, BellOutlined } from '@ant-design/icons';
-
+import ConfirmInvitationModal from "./../confirm-invitation-modal/index";
+import { PlusOutlined, BellOutlined } from "@ant-design/icons";
 
 const { TabPane } = Tabs;
 
-
-
 const mapDispatchToProps = { logout };
 
-const HeaderCustom = (props) =>
-{
+const HeaderCustom = (props) => {
   const [confirmModalVisible, toggleConfirmModal] = useState(false);
   const [invitations, setInvitations] = useState([]);
   const [activeKey, setActiveKey] = useState("home");
   const [modalOpen, setModalOpen] = useState(false);
 
-  const handleLogoutClick = () =>
-  {
+  const handleLogoutClick = () => {
     socket.emit("logout", {});
     props.logout();
     localStorage.removeItem("token");
     history.push("/home");
   };
 
-  const handleLoginClick = () =>
-  {
+  const handleLoginClick = () => {
     history.push("/login");
   };
 
-  const handleRegisterClick = () =>
-  {
+  const handleRegisterClick = () => {
     history.push("/register");
   };
 
   const logout = [
     <Row gutter={15}>
       <Col>
-        <Button onClick={() => { toggleConfirmModal(!confirmModalVisible) }}><BellOutlined /> Lời mời</Button>
+        <Button
+          onClick={() => {
+            toggleConfirmModal(!confirmModalVisible);
+          }}
+        >
+          <BellOutlined /> Lời mời
+        </Button>
       </Col>
       <Col>
         <Button danger type="text" onClick={handleLogoutClick}>
           Logout
-    </Button>
+        </Button>
       </Col>
-    </Row>
-
+    </Row>,
   ];
   const loginAndRegister = [
     <Row gutter={15} align="middle">
@@ -84,37 +91,43 @@ const HeaderCustom = (props) =>
                 <Col>
                   <Button
                     type="primary"
-                    onClick={() =>
-                    {
+                    onClick={() => {
                       setModalOpen(!modalOpen);
                     }}
                   >
-                    <PlusOutlined style={{ fontWeight: '300' }} />
+                    <PlusOutlined style={{ fontWeight: "300" }} />
                     Mời người chơi
-        </Button>
+                  </Button>
                 </Col>
               </Row>
-
-
-            ) : ""}
-            {props.roomJoined ? "" : (
+            ) : (
+              ""
+            )}
+            {props.roomJoined ? (
+              ""
+            ) : (
               <Col style={{ margin: "auto" }}>
                 <Tabs
                   style={{ marginTop: "15px" }}
                   activeKey={activeKey}
                   centered
                   size="large"
-                  onTabClick={(key) =>
-                  {
+                  onTabClick={(key) => {
                     setActiveKey(key);
                     history.push("/" + key);
                   }}
                 >
                   <TabPane tab="Tham gia" key="home" />
                   <TabPane tab="Phòng chơi" key="rooms" />
-                  {props.token ? <><TabPane tab="Xếp hạng" key="leaderboard" />
-                    <TabPane tab="Lịch sử" key="history" /> </>
-                    : ""}
+                  {props.token ? (
+                    <>
+                      <TabPane tab="Xếp hạng" key="leaderboard" />
+                      <TabPane tab="Lịch sử" key="history" />
+                      <TabPane tab="Hồ sơ" key="profile" />{" "}
+                    </>
+                  ) : (
+                    ""
+                  )}
                 </Tabs>
               </Col>
             )}
@@ -124,18 +137,19 @@ const HeaderCustom = (props) =>
       ></PageHeader>
       <InviteModal
         modalOpen={modalOpen}
-        onClose={() =>
-        {
+        onClose={() => {
           setModalOpen(!modalOpen);
         }}
       />
-      <ConfirmInvitationModal confirmModalVisible={confirmModalVisible} toggleConfirmModal={toggleConfirmModal} />
+      <ConfirmInvitationModal
+        confirmModalVisible={confirmModalVisible}
+        toggleConfirmModal={toggleConfirmModal}
+      />
     </Layout.Header>
   );
 };
 
-const mapStateToProps = (state) =>
-{
+const mapStateToProps = (state) => {
   const { token } = state.user;
   const { roomJoined } = state.header;
   return { token, roomJoined };

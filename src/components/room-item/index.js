@@ -34,7 +34,7 @@ const RoomItem = (props) =>
         setLoading(!loading);
         //logged in and not logged in
         //the first is logged in case
-        const data = { roomId: info._id };
+        const data = { roomId: info._id, joinMode: mode };
         //console.log(data);
         const result = await callServer(
             process.env.REACT_APP_HOST_NAME + "/room/join",
@@ -57,7 +57,7 @@ const RoomItem = (props) =>
         else
         {
             setLoading(!setLoading);
-            showNotification("error", "Không tìm thấy phòng!")
+            showNotification("error", result.message);
         }
     };
 

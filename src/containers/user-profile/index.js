@@ -1,5 +1,28 @@
+import React, { useEffect, useState } from 'react';
 import { Row, Col, Typography, Avatar } from "antd";
+import callServer from '../../utils/NetwordUtils2';
 const UserProfile = (props) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [profile, setProfile] = useState({});
+  const [historyGame, setHistoryHame] = useState([]);
+  useEffect(()=> {
+    const getUserProfile = async () => {
+      const response = await callServer(process.env.REACT_APP_HOST_NAME + '/auth/profile', "get");
+      if (response.status === 200) {
+        const data = await response.json();
+        console.log(data.account);
+        setProfile(data.account);
+        // console.log(profile);
+      } else {
+        const data = await response.json();
+        Notification('error', data.message);
+      }
+    }
+    const getHistory = async () => {
+
+    }
+    getUserProfile();
+  }, [])
   return (
     <div style={{ padding: "0px 50px", width: "100vw" }}>
       <Row style={{ marginTop: "30px" }} justify="center">
@@ -20,7 +43,7 @@ const UserProfile = (props) => {
       <Row style={{ marginTop: "30px" }} justify="center">
         <Col>
           <Typography.Title level={4}>
-            {props.fullname ? props.fullname : "Phan Nhật Vinh"}
+            {profile ? profile.fullName : "Phan Nhật Vinh"}
           </Typography.Title>
         </Col>
       </Row>
@@ -28,7 +51,7 @@ const UserProfile = (props) => {
       <Row justify="center">
         <Col>
           <Typography.Title level={5} style={{ fontWeight: "300" }}>
-            Tham gia ngày {props.joinedAt ? props.joinedAt : "23/06/2077"}
+            Tham gia ngày {profile ? profile.isCreatedAt : "23/06/2077"}
           </Typography.Title>
         </Col>
       </Row>
@@ -40,7 +63,7 @@ const UserProfile = (props) => {
           </Row>
           <Row justify="center">
             <Typography.Title level={4} style={{ fontWeight: "300" }}>
-              {props.cups ? props.cups : "200"}
+              {profile ? profile.score : "200"}
             </Typography.Title>
           </Row>
         </Col>

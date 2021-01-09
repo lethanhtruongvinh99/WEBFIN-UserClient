@@ -69,7 +69,7 @@ const LayoutCustom = (props) =>
           <Route exact path="/room/:id" component={Room} />
           <Route exact path="/leaderboard" component={Leaderboard} />
           <Route exact path="/history" component={History} />
-          <Route exact path="/user/:id" component={UserProfile} />
+          <Route exact path="/profile" component={UserProfile} />
           <Redirect from="/" to="/home" />
         </Switch>
       </Layout.Content>

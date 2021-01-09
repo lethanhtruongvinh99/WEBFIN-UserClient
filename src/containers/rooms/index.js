@@ -44,6 +44,7 @@ const Rooms = (props) =>
     {
       const response = await callServer(process.env.REACT_APP_HOST_NAME + '/room/', "get");
       const data = await response.json();
+      // console.log(response);
       // console.log(data.rooms);
       setListRoom(chunk(data.rooms, PERPAGE));
 
