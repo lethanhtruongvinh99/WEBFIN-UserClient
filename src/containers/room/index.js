@@ -116,24 +116,10 @@ const Room = (props) =>
   // console.log(messages);
   return (
     <div style={{ padding: "50px" }}>
-      <Row justify="space-between" align="middle">
-        <Col xs={24} sm={24} md={5} lg={5} >
-          <Row justify="center" align="middle" gutter={30}>
-            <Col>
-              <Avatar size={48} src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-            </Col>
-            <Col>
-              <Avatar size={48} src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-            </Col>
-            <Col>
-              <Button disabled={props.token ? false : true} type="primary">Bắt đầu trận</Button>
-            </Col>
-            <Col>
-              <Button disabled={props.token ? false : true} danger>Xin hoà</Button>
-            </Col>
-          </Row>
+      <Row justify="space-between" gutter={30} align="middle">
+        <Col id="infoArea" xs={24} sm={24} md={6} lg={6} style={{ padding: '30px', height: '85vh' }} >
           <Row
-            style={{ height: "10vh", marginTop: '30px' }}
+            style={{}}
             justify="space-between"
             align="middle"
           >
@@ -147,7 +133,7 @@ const Room = (props) =>
               <Statistic title="Time left" value="00:15" />
             </Col>
           </Row>
-          <Row style={{ overflowY: "scroll", height: "65vh" }}>
+          <Row style={{ overflowY: "scroll", height: "65vh", marginTop: '15px' }}>
             <Move />
             <Move />
             <Move />
@@ -159,12 +145,29 @@ const Room = (props) =>
           </Row>
         </Col>
 
-        <Col className="playing-area">
+        <Col xs={24} sm={24} md={10} lg={10} className="playing-area" id="infoRow">
+          <Row justify="center" align="middle" gutter={30} style={{ marginBottom: '30px' }}>
+            <Col>
+              <Avatar size={48} src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+            </Col>
+            <Col>
+              <Avatar size={48} src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+            </Col>
+            <Col>
+              <Button disabled={props.token ? false : true} type="primary">Bắt đầu trận</Button>
+            </Col>
+            <Col>
+              <Button disabled={props.token ? false : true} danger>Xin thua</Button>
+            </Col>
+            <Col>
+              <Button disabled={props.token ? false : true} danger>Xin hoà</Button>
+            </Col>
+          </Row>
           <Game Username={username} size={20} TurnName={turnName}></Game>
         </Col>
 
-        <Col className="chat-box" span={6}>
-          <Row id="chatBox" style={{ height: '75vh', overflowY: 'scroll' }} align={messages ? 'top' : "middle"}>
+        <Col className="chat-box" xs={24} sm={24} md={6} lg={6}>
+          <Row id="chatBox" style={{ height: '70vh', overflowY: 'scroll' }} align={messages ? 'top' : "middle"}>
             <Col>
               {messages ? messages.map((item, index) => (
                 <ChatMessage
@@ -181,7 +184,7 @@ const Room = (props) =>
             <TextArea
               disabled={props.token ? false : true}
               placeholder="Type your message here"
-              autoSize={{ minRows: 2, maxRows: 2 }}
+              autoSize={{ minRows: 3, maxRows: 3 }}
               className="message-input-box"
               value={message}
               onChange={(e) => setMessage(e.target.value)}

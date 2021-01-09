@@ -7,6 +7,7 @@ import { socket } from "../../api";
 import { logout } from "../../actions/user-actions";
 import InviteModal from "./../invite-modal/index";
 import ConfirmInvitationModal from './../confirm-invitation-modal/index';
+import { PlusOutlined, BellOutlined } from '@ant-design/icons';
 
 
 const { TabPane } = Tabs;
@@ -43,7 +44,7 @@ const HeaderCustom = (props) =>
   const logout = [
     <Row gutter={15}>
       <Col>
-        <Button onClick={() => { toggleConfirmModal(!confirmModalVisible) }}>Lời mời</Button>
+        <Button onClick={() => { toggleConfirmModal(!confirmModalVisible) }}><BellOutlined /> Lời mời</Button>
       </Col>
       <Col>
         <Button danger type="text" onClick={handleLogoutClick}>
@@ -88,7 +89,8 @@ const HeaderCustom = (props) =>
                       setModalOpen(!modalOpen);
                     }}
                   >
-                    Mời
+                    <PlusOutlined style={{ fontWeight: '300' }} />
+                    Mời người chơi
         </Button>
                 </Col>
               </Row>

@@ -29,7 +29,7 @@ const History = (props) =>
       const data = await response.json();
       // console.log(data.data);
       setListHistory(data.data);
-      setCurrentHistory(chunk(data.data), PERPAGE);
+      setCurrentHistory(chunk(data.data, PERPAGE)[0]);
       setIsLoading(false);
     }
     getHistory();
