@@ -13,7 +13,7 @@ import showNotification from './../../utils/NotificationUtils';
 import { connect } from 'react-redux';
 import { setInvitations } from "../../actions/user-actions";
 import callServer from './../../utils/NetworkUtils';
-
+import QuickJoinButton from './../../components/quick-join-button/index';
 
 const mapStateToProps = (state) =>
 {
@@ -61,6 +61,7 @@ const LayoutCustom = (props) =>
   return (
     <>
       <HeaderCustom />
+      <QuickJoinButton />
       <Layout.Content style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
         <Switch>
           <Route exact path="/home" component={Homepage} />

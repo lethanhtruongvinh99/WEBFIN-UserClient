@@ -64,7 +64,6 @@ const Rooms = (props) =>
       <Layout.Content style={{ padding: "150px 50px", position: "relative" }}>
         <Row justify="center" align="middle">
           <Typography.Title level={2}>Đang đợi người chơi</Typography.Title>
-          <QuickJoinButton />
         </Row>
 
         <Row

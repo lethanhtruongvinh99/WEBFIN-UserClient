@@ -98,7 +98,6 @@ const Homepage = (props) =>
 
   return (
     <div>
-      <QuickJoinButton />
       <Row style={{ marginTop: "45px" }}>
         <h1 style={{ textAlign: "center", margin: "auto" }}>
           Caro Online
