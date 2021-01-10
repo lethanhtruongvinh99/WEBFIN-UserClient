@@ -5,7 +5,7 @@
 .move {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
   cursor: pointer;
   padding: 10px;
   border-radius: 20px;

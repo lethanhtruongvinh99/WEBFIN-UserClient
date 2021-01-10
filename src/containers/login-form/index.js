@@ -59,14 +59,9 @@ const LoginForm = (props) =>
     setRecoveryPasswordUsername(e.target.value);
   }
 
-  useEffect(() =>
-  {
-    console.log("Login Form");
-  }, []);
-
   const onFinish = async (values) =>
   {
-    console.log("Received values of form: ", values);
+    //console.log("Received values of form: ", values);
     setIsLoading(true);
     const data = {
       ...values,
@@ -77,7 +72,7 @@ const LoginForm = (props) =>
       "post",
       data
     );
-    // console.log(result);
+    //console.log(result);
     if (result.auth)
     {
       setIsLoading(false);

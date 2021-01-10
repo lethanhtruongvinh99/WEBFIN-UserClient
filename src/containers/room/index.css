@@ -1,9 +1,15 @@
 .chat-box {
-  height: 80vh;
+}
+
+#chatBox,
+#infoArea,
+#infoRow {
+  border: 0.5px solid rgb(223, 223, 223);
+  border-radius: 20px;
+  padding: 30px;
 }
 
 .playing-area {
-  margin-left: 40px;
 }
 
 .message-container {
@@ -21,8 +27,8 @@
 }
 
 .message-input-box {
-  height: 10vh;
-  margin-top: 20px;
+  height: 12vh;
+  margin-top: 45px;
   height: 10%;
   border: 0.5px solid rgb(223, 223, 223);
   border-radius: 20px;

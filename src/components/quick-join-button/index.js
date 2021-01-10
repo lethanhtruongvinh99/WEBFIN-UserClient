@@ -7,6 +7,7 @@ const mapStateToProps = (state) =>
 {
   return {
     token: state.user.token,
+    roomJoined: state.header.roomJoined,
   }
 }
 
@@ -21,7 +22,7 @@ const QuickJoinButton = (props) =>
   return (
     <Button
       style={{
-        visibility: props.token ? "visible" : "hidden",
+        visibility: !props.token || props.roomJoined ? "hidden" : "visible",
         position: "fixed",
         bottom: "30px",
         right: "30px",

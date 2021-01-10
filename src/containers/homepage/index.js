@@ -1,9 +1,7 @@
 import { EnterOutlined, EyeOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button, Col, Form, Input, Row } from "antd";
-import { React, useEffect, useState } from "react";
+import { React, useState } from "react";
 import { connect } from "react-redux";
-import { onlineUsersChanged } from "../../actions/user-actions";
-import { socket } from "../../api";
 import callServer from "../../utils/NetworkUtils";
 import QuickJoinButton from "./../../components/quick-join-button/index";
 import showNotification from './../../utils/NotificationUtils';
@@ -12,7 +10,6 @@ import EnterPasswordModal from './components/enter-password-modal';
 import OnlineUsers from './components/online-users';
 import "./index.css";
 
-const mapDispatchToProps = { onlineUsersChanged };
 const mapStateToProps = (state) =>
 {
   const { onlineUsers, token } = state.user;
@@ -29,15 +26,6 @@ const Homepage = (props) =>
   const [roomPassword, setRoomPassword] = useState("");
   const [roomId, setRoomId] = useState("");
 
-
-  useEffect(() =>
-  {
-    socket.on("onlineUsersChanged", (data) =>
-    {
-      props.onlineUsersChanged(data.onlineUsers);
-    });
-  }, []);
-
   const openCreateRoomModal = () =>
   {
     setModalVisible(true);
@@ -53,7 +41,7 @@ const Homepage = (props) =>
 
     //logged in and not logged in
     //the first is logged in case
-    const data = { roomId: value.roomId };
+    const data = { roomId: value.roomId, joinMode: joinMode };
     const result = await callServer(
       process.env.REACT_APP_HOST_NAME + "/room/join",
       "post",
@@ -110,7 +98,6 @@ const Homepage = (props) =>
 
   return (
     <div>
-      <QuickJoinButton />
       <Row style={{ marginTop: "45px" }}>
         <h1 style={{ textAlign: "center", margin: "auto" }}>
           Caro Online
@@ -170,7 +157,7 @@ const Homepage = (props) =>
       </Row>
 
       {props.token ? <><h2 style={{ textAlign: "center", margin: "30px auto" }}>Đang online</h2>
-        <Row gutter={[16, 0]} className="avatar-row" justify="center">
+        <Row gutter={[16, 16]} className="avatar-row" justify="center">
           <OnlineUsers onlineUsers={props.onlineUsers} />
         </Row></> : ""}
 
@@ -180,4 +167,4 @@ const Homepage = (props) =>
     </div>
   );
 };
-export default connect(mapStateToProps, mapDispatchToProps)(Homepage);
+export default connect(mapStateToProps)(Homepage);

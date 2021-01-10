@@ -93,13 +93,16 @@ function Game(props)
   //   }
   // }
   return (
-    <Col className="game-area">
-      <Board
-        squares={state.squares}
-        onClick={(i) => handleClick(i)}
-        size={props.size}
-      />
-    </Col>
+    <Row justify="center" align="middle">
+      <Col className="game-area">
+        <Board
+          squares={state.squares}
+          onClick={(i) => handleClick(i)}
+          size={props.size}
+        />
+      </Col>
+    </Row>
+
   );
 }
 

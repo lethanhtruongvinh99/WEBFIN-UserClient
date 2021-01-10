@@ -1,6 +1,9 @@
 import { Modal, Row, Col, Typography } from "antd";
 import OnlineUser from "./../online-user/index";
-const InviteModal = (props) => {
+import { connect } from 'react-redux';
+
+const InviteModal = (props) =>
+{
   return (
     <Modal
       centered
@@ -15,25 +18,22 @@ const InviteModal = (props) => {
       </Row>
       <Row
         justify="center"
-        align="middle"
         gutter={[0, 15]}
         style={{ height: "50vh", overflowY: "scroll" }}
       >
         <Col span={24}>
-          <OnlineUser />
-          <OnlineUser />
-          <OnlineUser />
-          <OnlineUser />
-          <OnlineUser />
-          <OnlineUser />
-          <OnlineUser />
-          <OnlineUser />
-          <OnlineUser />
-          <OnlineUser />
+          {props.onlineUsers?.map((item, index) => <OnlineUser key={index} username={item.username} />)}
         </Col>
       </Row>
     </Modal>
   );
 };
 
-export default InviteModal;
+const mapStateToProps = (state) =>
+{
+  return {
+    onlineUsers: state.user.onlineUsers,
+  }
+}
+
+export default connect(mapStateToProps)(InviteModal);

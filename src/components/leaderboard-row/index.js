@@ -7,12 +7,15 @@ const contentStyle = {
   height: "300px",
 };
 
-const LeaderboardRow = (props) => {
+const LeaderboardRow = (props) =>
+{
   const [topPlayer, setTopPlayer] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(()=> {
-    const getTopPlayer = async () => {
+  useEffect(() =>
+  {
+    const getTopPlayer = async () =>
+    {
       const response = await callServer(process.env.REACT_APP_HOST_NAME + "/auth/rankchart", "GET");
       // console.log(response);
       const data = await response.json();
@@ -22,12 +25,12 @@ const LeaderboardRow = (props) => {
 
     };
     getTopPlayer();
-  },[]);
+  }, []);
   return (
     <div>
       <Row style={contentStyle} justify="center" align="middle" gutter={30}>
-        {isLoading ? <Spin /> : null}
-        {topPlayer.length > 0 ? topPlayer.map(item => (<LeaderboardItem info={item}/>)) : null}
+        {isLoading ? <Spin size="large" /> : null}
+        {topPlayer.length > 0 ? topPlayer.map(item => (<LeaderboardItem info={item} />)) : null}
       </Row>
     </div>
   );

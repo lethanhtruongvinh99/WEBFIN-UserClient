@@ -42,7 +42,7 @@ const CreateRoomModal = (props) =>
                     name="roomName"
                     rules={[{ required: true, message: "Please input board name!" }]}
                 >
-                    <Input className="board-input" placeholder="Room name" />
+                    <Input className="board-input" placeholder="Tên phòng" />
                 </Form.Item>
                 <Row justify="space-between" gutter={15}>
                     <Col span={12}>
