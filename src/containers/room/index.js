@@ -19,25 +19,25 @@ const Room = (props) => {
   const [turnName, setTurnName] = useState("");
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState("");
+  const [timePerTurn, setTimePerTurn] = useState(30);
   const roomId = props.match.params.id;
 
   useEffect(() => {
     props.roomJoined([]);
 
-    const fetchRoomDetails = async () =>
-    {
-      const result = await callServer(process.env.REACT_APP_HOST_NAME + '/room/detail', 'POST', { roomId: roomId })
-      setMessages(result.data.messages)
+    const fetchRoomDetails = async () => {
+      const result = await callServer(process.env.REACT_APP_HOST_NAME + "/room/detail", "POST", { roomId: roomId });
+      setMessages(result.data.messages);
+      setTimePerTurn(result.data.timePerTurn);
+      //console.log(result.data.timePerTurn);
       console.log(result);
-    }
+    };
 
     fetchRoomDetails();
 
-
     socket.emit("join", { roomId, token });
 
-    socket.on("turnName", (response) =>
-    {
+    socket.on("turnName", (response) => {
       //console.log("---- SOCKET: ON_turnName: ", response);
       setTurnName(response);
     });
@@ -58,7 +58,10 @@ const Room = (props) => {
       props.roomLeft();
     };
   }, []);
+  
+  useEffect(() => {
 
+  }, [messages, timePerTurn]);
   function scrollToBottom() {
     animateScroll.scrollToBottom({
       containerId: "chatBox",
@@ -73,21 +76,16 @@ const Room = (props) => {
     if (message) {
       let newMsg = {
         content: message,
-        username: 'Tôi',
-      }
+        username: "Tôi",
+      };
       setMessages([...messages, newMsg]);
       setMessage("");
 
       scrollToBottom();
 
-      const result = await callServer(
-        process.env.REACT_APP_HOST_NAME + "/message/add",
-        "post",
-        { roomId: roomId, content: message }
-      );
+      const result = await callServer(process.env.REACT_APP_HOST_NAME + "/message/add", "post", { roomId: roomId, content: message });
       //console.log(result);
-      if (result.status === 200)
-      {
+      if (result.status === 200) {
         socket.emit("sendMessage", { roomId, message, token });
       }
       // console.log(message);
@@ -97,7 +95,7 @@ const Room = (props) => {
   return (
     <div style={{ padding: "50px" }}>
       <Row justify="space-between" align="middle">
-        <Col xs={24} sm={24} md={5} lg={5} >
+        <Col xs={24} sm={24} md={5} lg={5}>
           <Row justify="center" align="middle" gutter={30}>
             <Col>
               <Avatar size={48} src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
@@ -125,7 +123,7 @@ const Room = (props) => {
             </Col>
             <Col>
               {/* <Statistic title="Time left" value="00:15" /> */}
-              <Timer />{" "}
+              <Timer timePerTurn={timePerTurn} />{" "}
             </Col>
           </Row>
           <Row style={{ overflowY: "scroll", height: "65vh" }}>
@@ -145,16 +143,8 @@ const Room = (props) => {
         </Col>
 
         <Col className="chat-box" span={6}>
-          <Row id="chatBox" style={{ height: '75vh', overflowY: 'scroll' }} align={messages ? 'top' : "middle"}>
-            <Col>
-              {messages ? messages.map((item, index) => (
-                <ChatMessage
-                  key={index}
-                  content={item.content}
-                  username={item.username}
-                />
-              )) : <Empty />}
-            </Col>
+          <Row id="chatBox" style={{ height: "75vh", overflowY: "scroll" }} align={messages ? "top" : "middle"}>
+            <Col>{messages ? messages.map((item, index) => <ChatMessage key={index} content={item.content} username={item.username} />) : <Empty />}</Col>
           </Row>
 
           <Row>

@@ -5,7 +5,7 @@ const Timer = (props) => {
   const [second, setSecond] = useState("00");
   const [minute, setMinute] = useState("00");
   const [isActive, setIsActive] = useState(false);
-  const [counter, setCounter] = useState(90);
+  const [counter, setCounter] = useState(props.timePerTurn);
 
   useEffect(() => {
     let intervalId;
@@ -20,8 +20,7 @@ const Timer = (props) => {
 
         setSecond(computedSecond);
         setMinute(computedMinute);
-
-        setCounter((counter) => counter - 1);
+        if(counter>0) setCounter((counter) => counter - 1);
       }, 1000);
     }
 
@@ -30,13 +29,13 @@ const Timer = (props) => {
 
   const resetTimer = () => {
     setIsActive(true);
-    setCounter(90);
+    setCounter(props.timePerTurn);
   };
   return (
     <div className="container">
       <div className="time">
         <span className="minute">{minute}</span>
-        <span>:</span>
+        <span> : </span>
         <span className="second">{second}</span>
       </div>
       <div className="buttons">
