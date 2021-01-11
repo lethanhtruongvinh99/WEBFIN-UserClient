@@ -12,6 +12,10 @@ import { roomJoined, roomLeft } from "./../../actions/header-action";
 import { animateScroll } from "react-scroll";
 import { useHistory } from "react-router";
 import showNotification from "../../utils/NotificationUtils";
+import Timer from "../../components/timer";
+import WinModal from "./components/win-modal";
+import CloseModal from "./components/close-modal";
+import DrawModal from "./components/draw-modal";
 
 let tempMessages = [];
 function scrollToBottom() {
@@ -28,16 +32,16 @@ const Room = (props) => {
   const [turnName, setTurnName] = useState("");
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
+  const [timePerTurn, setTimePerTurn] = useState(30);
+  const [isWinModalVisible, setWinModalVisible] = useState(false);
+  const [isCloseModalVisible, setCloseModalVisible] = useState(false);
+  const [isDrawModalVisible, setDrawModalVisible] = useState(false);
   const roomId = props.match.params.id;
   const history = useHistory();
   const handleBack = async () => {
     //
     // console.log(roomId);
-    const result = await callServer(
-      process.env.REACT_APP_HOST_NAME + "/room/leave",
-      "POST",
-      { roomId: roomId }
-    );
+    const result = await callServer(process.env.REACT_APP_HOST_NAME + "/room/leave", "POST", { roomId: roomId });
     console.log(result);
     if (result.status === 200) {
       socket.emit("leaveRoom", { roomId: roomId, sign: result.sign });
@@ -68,15 +72,11 @@ const Room = (props) => {
     props.roomJoined([]);
 
     const fetchRoomDetails = async () => {
-      const result = await callServer(
-        process.env.REACT_APP_HOST_NAME + "/room/detail",
-        "POST",
-        { roomId: roomId }
-      );
+      const result = await callServer(process.env.REACT_APP_HOST_NAME + "/room/detail", "POST", { roomId: roomId });
       tempMessages = result.data.messages;
       setMessages(tempMessages);
-
-      //console.log(result);
+      setTimePerTurn(result.data.timePerTurn);
+      console.log(result);
     };
 
     fetchRoomDetails();
@@ -123,11 +123,7 @@ const Room = (props) => {
       setMessage("");
       scrollToBottom();
 
-      const result = await callServer(
-        process.env.REACT_APP_HOST_NAME + "/message/add",
-        "post",
-        { roomId: roomId, content: message }
-      );
+      const result = await callServer(process.env.REACT_APP_HOST_NAME + "/message/add", "post", { roomId: roomId, content: message });
       //console.log(result);
       if (result.status === 200) {
         //console.log('this');
@@ -137,6 +133,14 @@ const Room = (props) => {
     }
   };
   // console.log(messages);
+
+  const handleResign = () => {
+    setCloseModalVisible(true);
+  };
+  const handleOfferDraw = () => {
+    setDrawModalVisible(true);
+  };
+
   return (
     <div style={{ padding: "50px" }}>
       <Button
@@ -148,14 +152,7 @@ const Room = (props) => {
         Thoát
       </Button>
       <Row justify="space-between" gutter={30} align="middle">
-        <Col
-          id="infoArea"
-          xs={24}
-          sm={24}
-          md={6}
-          lg={6}
-          style={{ padding: "30px", height: "85vh" }}
-        >
+        <Col id="infoArea" xs={24} sm={24} md={6} lg={6} style={{ padding: "30px", height: "85vh" }}>
           <Row style={{}} justify="space-between" align="middle">
             <Col>
               <Statistic title="Player turn" value="nhatvinh43" />
@@ -164,12 +161,11 @@ const Room = (props) => {
               <Statistic title="Symbol" value="X " />
             </Col>
             <Col>
-              <Statistic title="Time left" value="00:15" />
+              {/* <Statistic title="Time left" value="00:15" /> */}
+              <Timer timePerTurn={timePerTurn}></Timer>
             </Col>
           </Row>
-          <Row
-            style={{ overflowY: "scroll", height: "65vh", marginTop: "15px" }}
-          >
+          <Row style={{ overflowY: "scroll", height: "65vh", marginTop: "15px" }}>
             <Move />
             <Move />
             <Move />
@@ -181,48 +177,26 @@ const Room = (props) => {
           </Row>
         </Col>
 
-        <Col
-          xs={24}
-          sm={24}
-          md={10}
-          lg={10}
-          className="playing-area"
-          id="infoRow"
-        >
-          <Row
-            justify="center"
-            align="middle"
-            gutter={30}
-            style={{ marginBottom: "30px" }}
-          >
+        <Col xs={24} sm={24} md={10} lg={10} className="playing-area" id="infoRow">
+          <Row justify="center" align="middle" gutter={30} style={{ marginBottom: "30px" }}>
             <Col>
-              <Avatar
-                size={48}
-                src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-              />
+              <Avatar size={48} src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
             </Col>
             <Col>
-              <Avatar
-                size={48}
-                src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-              />
+              <Avatar size={48} src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
             </Col>
             <Col>
-              <Button
-                disabled={props.token ? false : true}
-                type="primary"
-                onClick={() => handleStartGame()}
-              >
+              <Button disabled={props.token ? false : true} type="primary" onClick={() => handleStartGame()}>
                 Bắt đầu trận
               </Button>
             </Col>
             <Col>
-              <Button disabled={props.token ? false : true} danger>
+              <Button onClick={handleResign} disabled={props.token ? false : true} danger>
                 Xin thua
               </Button>
             </Col>
             <Col>
-              <Button disabled={props.token ? false : true} danger>
+              <Button onClick={handleOfferDraw} disabled={props.token ? false : true} danger>
                 Xin hoà
               </Button>
             </Col>
@@ -231,24 +205,8 @@ const Room = (props) => {
         </Col>
 
         <Col className="chat-box" xs={24} sm={24} md={6} lg={6}>
-          <Row
-            id="chatBox"
-            style={{ height: "70vh", overflowY: "scroll" }}
-            align={messages ? "top" : "middle"}
-          >
-            <Col>
-              {messages ? (
-                messages.map((item, index) => (
-                  <ChatMessage
-                    key={index}
-                    content={item.content}
-                    username={item.username}
-                  />
-                ))
-              ) : (
-                <Empty />
-              )}
-            </Col>
+          <Row id="chatBox" style={{ height: "70vh", overflowY: "scroll" }} align={messages ? "top" : "middle"}>
+            <Col>{messages ? messages.map((item, index) => <ChatMessage key={index} content={item.content} username={item.username} />) : <Empty />}</Col>
           </Row>
 
           <Row>
@@ -265,6 +223,9 @@ const Room = (props) => {
           </Row>
         </Col>
       </Row>
+      {/* <WinModal isModalVisible={isWinModalVisible} setModalVisible={setWinModalVisible} /> */}
+      <CloseModal isModalVisible={isCloseModalVisible} setModalVisible={setCloseModalVisible} />
+      <DrawModal isModalVisible={isDrawModalVisible} setModalVisible={setDrawModalVisible} />
     </div>
   );
 };
