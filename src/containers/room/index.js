@@ -53,18 +53,15 @@ const Room = (props) => {
       console.log(response.message);
       showNotification("error", response.message);
     });
-  }, []);
-  useEffect(() => {
     socket.on("hostOut", (response) => {
       console.log(response.message);
       showNotification("error", response.message);
     });
-  }, []);
-  useEffect(() => {
-    socket.on("guestOut", (response) => {
+    socket.on("hostOut", (response) => {
       console.log(response.message);
       showNotification("error", response.message);
     });
+    //socket.removeAllListeners();
   }, []);
 
   const handleStartGame = async () => {};
@@ -201,7 +198,7 @@ const Room = (props) => {
               </Button>
             </Col>
           </Row>
-          <Game Username={username} size={20} TurnName={turnName}></Game>
+          <Game Username={username} size={20} TurnName={turnName} roomId={roomId}></Game>
         </Col>
 
         <Col className="chat-box" xs={24} sm={24} md={6} lg={6}>

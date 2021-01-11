@@ -4,6 +4,7 @@ import { socket } from "../../api";
 import Board from "../../components/board/index";
 import { Col, Row, Statistic, Modal, Button } from "antd";
 import "./index.css";
+import callServer from "../../utils/NetworkUtils";
 import Move from "./../move/index";
 import WinModal from "../../containers/room/components/win-modal";
 import CloseModal from "../../containers/room/components/close-modal";
@@ -26,6 +27,7 @@ function Game(props) {
     squares: initMatrix(props.size),
     lastMove: -1,
   });
+  const roomId = props.roomId;
   const username = props.Username;
   const sizeBoard = props.size;
   const turnName = props.TurnName;
@@ -60,7 +62,7 @@ function Game(props) {
     socket.emit("sendMove", { roomIdT, move, token, opponentTurnName });
   };
 
-  const handleClick = (i) => {
+  const handleClick = async (i) => {
     let squares = state.squares;
     let x = Math.floor(i / squares[0].length);
     let y = i % squares[0].length;
@@ -81,6 +83,7 @@ function Game(props) {
       }
       setIsFinish(true);
     }
+    const result = await callServer(process.env.REACT_APP_HOST_NAME + "/room/move", "POST", { roomId: props.roomId, move: {x:x, y:y} });
     sendMove(i, turnName);
   };
   return (
