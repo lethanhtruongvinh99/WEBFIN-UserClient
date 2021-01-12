@@ -1,7 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Row, Typography, Layout, Spin, Pagination } from "antd";
-import QuickJoinButton from "../../components/quick-join-button";
+import { Row, Typography, Layout, Spin, Pagination, Empty } from "antd";
 import RoomItem from "./../../components/room-item/index";
 import callServer from "./../../utils/NetwordUtils2";
 import { chunk } from 'lodash';
@@ -10,8 +9,6 @@ const PERPAGE = 12;
 
 const Rooms = (props) =>
 {
-  const [listRoom, setListRoom] = useState([]);
-
   //Use for storing data from server
   const [waitingRooms, setWaitingRooms] = useState([]);
   const [ongoingRooms, setOngoingRooms] = useState([]);
@@ -24,6 +21,16 @@ const Rooms = (props) =>
   const [currentOngoingPage, setCurrentOngoingPage] = useState(1);
 
   const [waitingLoading, setWaitingLoading] = useState(true);
+
+  const empty = (
+    <Empty
+      style={{ margin: '30px' }}
+      description={
+        <span>
+          Không có phòng nào!
+        </span>
+      }
+    />)
 
   const handleWaitingRoomsPageChange = (number) =>
   {
@@ -44,17 +51,14 @@ const Rooms = (props) =>
     {
       const response = await callServer(process.env.REACT_APP_HOST_NAME + '/room/', "get");
       const data = await response.json();
-      // console.log(response);
-      // console.log(data.rooms);
-      setListRoom(chunk(data.rooms, PERPAGE));
 
       //Placeholder for testing purpose, needs to redesign after api is complete
-      setWaitingRooms(data.rooms);
-      setOngoingRooms(data.rooms);
+      setWaitingRooms(data.rooms.awaiting);
+      setOngoingRooms(data.rooms.ongoing);
 
       //Set pagination
-      setCurrentWaitingRooms(chunk(data.rooms, PERPAGE)[0]);
-      setCurrentOngoingRooms(chunk(data.rooms, PERPAGE)[0]);
+      setCurrentWaitingRooms(chunk(data.rooms.awaiting, PERPAGE)[0]);
+      setCurrentOngoingRooms(chunk(data.rooms.ongoing, PERPAGE)[0]);
 
       setWaitingLoading(!waitingLoading);
     };
@@ -71,10 +75,10 @@ const Rooms = (props) =>
           justify="center"
           align="middle"
           gutter={[30, 30]}
-          style={{ margin: "30px 0px" }}
+          style={{ margin: "30px 0px", width: '100vw' }}
         >
-          {waitingLoading ? <Spin size="large" /> : null}
-          {currentWaitingRooms.length > 0 ? currentWaitingRooms.map(item => (<RoomItem key={item.roomId} info={item} />)) : null}
+          {waitingLoading ? <Spin size="large" style={{ margin: '30px' }} /> : null}
+          {currentWaitingRooms ? currentWaitingRooms.map(item => (<RoomItem key={item.roomId} info={item} />)) : empty}
         </Row>
 
         <Row justify="end" style={{ margin: "30px 0px" }}>
@@ -89,10 +93,10 @@ const Rooms = (props) =>
           justify="center"
           align="middle"
           gutter={[30, 30]}
-          style={{ margin: "30px 0px" }}
+          style={{ margin: "30px 0px", width: '100vw' }}
         >
-          {waitingLoading ? <Spin size="large" /> : null}
-          {currentOngoingRooms.length > 0 ? currentOngoingRooms.map(item => (<RoomItem key={item.roomId} info={item} />)) : null}
+          {waitingLoading ? <Spin style={{ margin: '30px' }} size="large" /> : null}
+          {currentOngoingRooms ? currentOngoingRooms.map(item => (<RoomItem key={item.roomId} info={item} />)) : empty}
         </Row>
 
         <Row justify="end" style={{ margin: "30px 0px" }}>

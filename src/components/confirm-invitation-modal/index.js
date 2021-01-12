@@ -1,5 +1,5 @@
 
-import { Col, Modal, Row, Typography } from 'antd';
+import { Col, Modal, Row, Typography, Empty } from 'antd';
 import { connect } from 'react-redux';
 import { setInvitations } from '../../actions/user-actions';
 import Inviter from './../inviter/index';
@@ -65,12 +65,20 @@ const ConfirmInvitationModal = (props) =>
     return (<>
         <Modal centered footer={false} visible={props.confirmModalVisible} onCancel={() => { props.toggleConfirmModal(!props.confirmModalVisible) }}>
             <Row justify="center">
-                <Typography.Title level={3}>Danh sách lời mời</Typography.Title>
+                <Typography.Title level={3} style={{ marginTop: '15px' }}>Danh sách lời mời</Typography.Title>
             </Row>
 
-            <div style={{ height: "50vh", overflowY: "scroll" }} >
+            <div style={{ height: props.invitations.length > 0 ? "50vh" : "20vh", overflowY: "scroll" }} >
                 <Col>
-                    {props.invitations?.map((item, index) => <Inviter username={item.username} handleAcceptInvitation={handleAcceptInvitation} roomId={item.roomId} key={item.roomId + item.username + index} />)}
+                    {props.invitations.length > 0 ? props.invitations.map((item, index) => <Inviter username={item.username} handleAcceptInvitation={handleAcceptInvitation} roomId={item.roomId} key={item.roomId + item.username + index} />) :
+                        <Empty
+                            style={{ margin: '30px' }}
+                            description={
+                                <span>
+                                    Không có lời mời nào!
+                                </span>
+                            }
+                        />}
                 </Col>
             </div>
 

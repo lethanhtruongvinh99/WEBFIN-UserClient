@@ -1,8 +1,11 @@
-import { ROOM_JOINED, ROOM_LEFT } from "../constants/action-types";
+import { ROOM_JOINED, ROOM_LEFT, PAGE_SWITCHED } from "../constants/action-types";
 
 const initialState = {
     roomJoined: false,
-    joinedUsers: []
+    joinedUsers: [],
+    header: {
+
+    }
 };
 
 const HeaderReducer = (state = initialState, action) =>
@@ -15,6 +18,10 @@ const HeaderReducer = (state = initialState, action) =>
 
         case ROOM_LEFT: {
             return { ...state, roomJoined: false }
+        }
+
+        case PAGE_SWITCHED: {
+            return { ...state, header: action.payload }
         }
 
         default: {

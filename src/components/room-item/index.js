@@ -52,7 +52,11 @@ const RoomItem = (props) =>
                 setRoomId(result.data._id);
                 setPasswordModalVisible(true);
             }
-            else history.push(`/room/${result.data._id}`);
+            else
+            {
+
+                history.push(`/room/${result.data._id}`)
+            };
         }
         else
         {
@@ -77,9 +81,10 @@ const RoomItem = (props) =>
                         <Image
                             alt="placeholder"
                             src="/room-item.jpg"
+                            onClick={(e) => { e.stopPropagation(); e.preventDefault(); return; }}
                         />
                     }
-                    actions={props.token ? [
+                    actions={props.token && props.info.isAvailable ? [
                         <>{props.info.password ? <LockOutlined /> : <GlobalOutlined />}</>,
                         <>{loading ? <Spin style={{ margin: 'auto' }} size="small" spinning={loading} /> : <EnterOutlined key="enter" onClick={() => { handleJoinRoom(props.info, 'play') }} />} </>,
                         <>{loading ? <Spin style={{ margin: 'auto' }} size="small" spinning={loading} /> : <EyeOutlined key="watch" onClick={() => { handleJoinRoom(props.info, 'observe') }} />} </>,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Row, Typography, Spin, Pagination } from "antd";
+import { Layout, Row, Typography, Spin, Pagination, Empty } from "antd";
 import RoomItem from "./../../components/room-item/index";
 import callServer from '../../utils/NetwordUtils2';
 import { chunk } from 'lodash';
@@ -48,7 +48,14 @@ const History = (props) =>
           style={{ margin: "30px 0px" }}
         >
           {isLoading ? <Spin size="large" /> : null}
-          {currentHistory.length > 0 ? currentHistory.map(item => (<RoomItem info={item} />)) : null}
+          {currentHistory ? currentHistory.map(item => (<RoomItem history={true} info={item} />)) : <Empty
+            style={{ margin: '30px' }}
+            description={
+              <span>
+                Không có phòng nào!
+        </span>
+            }
+          />}
         </Row>
 
         <Row justify="end" style={{ margin: "30px 0px" }}>

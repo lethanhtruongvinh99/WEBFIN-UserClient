@@ -3,7 +3,6 @@ import { Button, Col, Form, Input, Row } from "antd";
 import { React, useState } from "react";
 import { connect } from "react-redux";
 import callServer from "../../utils/NetworkUtils";
-import QuickJoinButton from "./../../components/quick-join-button/index";
 import showNotification from './../../utils/NotificationUtils';
 import CreateRoomModal from './components/create-room-modal';
 import EnterPasswordModal from './components/enter-password-modal';
@@ -57,7 +56,11 @@ const Homepage = (props) =>
         setRoomId(result.data._id);
         setPasswordModalVisible(true);
       }
-      else props.history.push(`/room/${result.data._id}`);
+      else
+      {
+
+        props.history.push(`/room/${result.data._id}`)
+      };
     }
     else
     {

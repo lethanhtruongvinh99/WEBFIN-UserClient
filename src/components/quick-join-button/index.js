@@ -1,7 +1,9 @@
 import { Button } from "antd";
 import { EnterOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { connect } from 'react-redux';
+import { socket } from './../../api/index';
+import { history } from './../../history';
 
 const mapStateToProps = (state) =>
 {
@@ -17,7 +19,19 @@ const QuickJoinButton = (props) =>
   const handleQuickJoin = () =>
   {
     setLoading(!loading);
+
+    socket.emit('joinQueue', { token: props.token });
+
   };
+
+  useEffect(() =>
+  {
+    socket.on('quickRoomCreated', (data) =>
+    {
+      console.log(data);
+      history.push('/room/' + data._id);
+    })
+  }, [])
 
   return (
     <Button

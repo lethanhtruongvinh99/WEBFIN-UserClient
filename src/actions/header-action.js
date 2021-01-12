@@ -1,4 +1,4 @@
-import { ROOM_JOINED, ROOM_LEFT } from '../constants/action-types';
+import { ROOM_JOINED, ROOM_LEFT, PAGE_SWITCHED } from '../constants/action-types';
 
 export const roomJoined = (payload) =>
 {
@@ -8,4 +8,9 @@ export const roomJoined = (payload) =>
 export const roomLeft = (payload) =>
 {
     return { type: ROOM_LEFT };
+}
+
+export const pageSwitched = (payload) =>
+{
+    return { type: PAGE_SWITCHED, payload };
 }

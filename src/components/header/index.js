@@ -1,53 +1,90 @@
-import React, { useState } from "react";
-import {
-  PageHeader,
+import { BellOutlined, PlusOutlined } from "@ant-design/icons";
+import
+{
   Button,
-  Tooltip,
-  Avatar,
-  Layout,
-  Tabs,
-  Row,
-  Col,
+  Col, Layout, PageHeader,
+  Row, Tabs
 } from "antd";
-import { history } from "../../history";
-import "./index.css";
+import React, { useState } from "react";
 import { connect } from "react-redux";
-import { socket } from "../../api";
 import { logout } from "../../actions/user-actions";
-import InviteModal from "./../invite-modal/index";
+import { socket } from "../../api";
+import { history } from "../../history";
 import ConfirmInvitationModal from "./../confirm-invitation-modal/index";
-import { PlusOutlined, BellOutlined } from "@ant-design/icons";
+import InviteModal from "./../invite-modal/index";
+import "./index.css";
 
 const { TabPane } = Tabs;
 
 const mapDispatchToProps = { logout };
 
-const HeaderCustom = (props) => {
+const HeaderCustom = (props) =>
+{
   const [confirmModalVisible, toggleConfirmModal] = useState(false);
-  const [invitations, setInvitations] = useState([]);
-  const [activeKey, setActiveKey] = useState("home");
+  const [activeKey, setActiveKey] = useState(localStorage.getItem('tab') || "home");
+  const [title, setTitle] = useState(localStorage.getItem('title') || "Trang chủ");
   const [modalOpen, setModalOpen] = useState(false);
 
-  const handleLogoutClick = () => {
+  const handleLogoutClick = () =>
+  {
     socket.emit("logout", {});
     props.logout();
     localStorage.removeItem("token");
     history.push("/home");
   };
 
-  const handleLoginClick = () => {
+  const handleLoginClick = () =>
+  {
     history.push("/login");
   };
 
-  const handleRegisterClick = () => {
+  const handleRegisterClick = () =>
+  {
     history.push("/register");
   };
+
+  const setActiveTab = (key) =>
+  {
+    localStorage.setItem('tab', key);
+  }
+
+  const setSiteName = (key) =>
+  {
+    let siteName = "";
+    switch (key)
+    {
+      case 'rooms': {
+        siteName = "Phòng chơi";
+        break;
+      }
+      case 'leaderboard': {
+        siteName = "Xếp hạng";
+        break;
+      }
+      case 'history': {
+        siteName = "Lịch sử";
+        break;
+      }
+      case 'profile': {
+        siteName = "Hồ sơ";
+        break;
+      }
+      default: {
+        siteName = "Trang chủ";
+        break;
+      }
+    }
+
+    localStorage.setItem('title', siteName);
+    setTitle(siteName)
+  }
 
   const logout = [
     <Row gutter={15}>
       <Col>
         <Button
-          onClick={() => {
+          onClick={() =>
+          {
             toggleConfirmModal(!confirmModalVisible);
           }}
         >
@@ -82,8 +119,7 @@ const HeaderCustom = (props) => {
         ghost={false}
         style={{ zIndex: "1" }}
         onBack={() => window.history.back()}
-        title="Title"
-        subTitle="This is a subtitle"
+        title={title}
         extra={[
           <Row gutter={45} align="middle">
             {props.roomJoined && props.token ? (
@@ -91,7 +127,8 @@ const HeaderCustom = (props) => {
                 <Col>
                   <Button
                     type="primary"
-                    onClick={() => {
+                    onClick={() =>
+                    {
                       setModalOpen(!modalOpen);
                     }}
                   >
@@ -101,43 +138,49 @@ const HeaderCustom = (props) => {
                 </Col>
               </Row>
             ) : (
-              ""
-            )}
+                ""
+              )}
             {props.roomJoined ? (
               ""
             ) : (
-              <Col style={{ margin: "auto" }}>
-                <Tabs
-                  style={{ marginTop: "15px" }}
-                  activeKey={activeKey}
-                  centered
-                  size="large"
-                  onTabClick={(key) => {
-                    setActiveKey(key);
-                    history.push("/" + key);
-                  }}
-                >
-                  <TabPane tab="Tham gia" key="home" />
-                  <TabPane tab="Phòng chơi" key="rooms" />
-                  {props.token ? (
-                    <>
-                      <TabPane tab="Xếp hạng" key="leaderboard" />
-                      <TabPane tab="Lịch sử" key="history" />
-                      <TabPane tab="Hồ sơ" key="profile" />{" "}
-                    </>
-                  ) : (
-                    ""
-                  )}
-                </Tabs>
-              </Col>
-            )}
+                <Col style={{ margin: "auto" }}>
+                  <Tabs
+                    style={{ marginTop: "15px" }}
+                    activeKey={activeKey}
+                    centered
+                    size="large"
+
+                    onTabClick={(key) =>
+                    {
+                      setActiveKey(key);
+                      setActiveTab(key);
+                      setSiteName(key);
+
+                      history.push("/" + key);
+                    }}
+                  >
+                    <TabPane tab="Trang chủ" key="home" />
+                    <TabPane tab="Phòng chơi" key="rooms" />
+                    {props.token ? (
+                      <>
+                        <TabPane tab="Xếp hạng" key="leaderboard" />
+                        <TabPane tab="Lịch sử" key="history" />
+                        <TabPane tab="Hồ sơ" key="profile" />{" "}
+                      </>
+                    ) : (
+                        ""
+                      )}
+                  </Tabs>
+                </Col>
+              )}
             <Col>{content}</Col>
           </Row>,
         ]}
       ></PageHeader>
       <InviteModal
         modalOpen={modalOpen}
-        onClose={() => {
+        onClose={() =>
+        {
           setModalOpen(!modalOpen);
         }}
       />
@@ -149,10 +192,11 @@ const HeaderCustom = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state) =>
+{
   const { token } = state.user;
-  const { roomJoined } = state.header;
-  return { token, roomJoined };
+  const { roomJoined, header } = state.header;
+  return { token, roomJoined, header };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HeaderCustom);
