@@ -18,7 +18,8 @@ import CloseModal from "./components/close-modal";
 import DrawModal from "./components/draw-modal";
 
 let tempMessages = [];
-function scrollToBottom() {
+function scrollToBottom()
+{
   animateScroll.scrollToBottom({
     containerId: "chatBox",
     duration: "0",
@@ -26,7 +27,8 @@ function scrollToBottom() {
   });
 }
 
-const Room = (props) => {
+const Room = (props) =>
+{
   const token = localStorage.getItem("token");
   const [username, setUsername] = useState("");
   const [turnName, setTurnName] = useState("");
@@ -38,54 +40,71 @@ const Room = (props) => {
   const [isDrawModalVisible, setDrawModalVisible] = useState(false);
   const roomId = props.match.params.id;
   const history = useHistory();
-  const handleBack = async () => {
+  const handleBack = async () =>
+  {
     //
     // console.log(roomId);
     const result = await callServer(process.env.REACT_APP_HOST_NAME + "/room/leave", "POST", { roomId: roomId });
     console.log(result);
-    if (result.status === 200) {
+    if (result.status === 200)
+    {
       socket.emit("leaveRoom", { roomId: roomId, sign: result.sign });
       history.push("/home");
     }
   };
-  useEffect(() => {
-    socket.on("playerBOut", (response) => {
+  useEffect(() =>
+  {
+    socket.on("playerBOut", (response) =>
+    {
       console.log(response.message);
       showNotification("error", response.message);
     });
-    socket.on("hostOut", (response) => {
+    socket.on("hostOut", (response) =>
+    {
       console.log(response.message);
       showNotification("error", response.message);
     });
-    socket.on("hostOut", (response) => {
+    socket.on("hostOut", (response) =>
+    {
       console.log(response.message);
       showNotification("error", response.message);
     });
     //socket.removeAllListeners();
+    return (() =>
+    {
+      handleBack();
+    })
   }, []);
 
-  const handleStartGame = async () => {};
-  useEffect(() => {
-    props.roomJoined([]);
+  const handleStartGame = async () => { };
+  useEffect(() =>
+  {
+    props.roomJoined({ isHost: false, isAvailable: false });
 
-    const fetchRoomDetails = async () => {
+    const fetchRoomDetails = async () =>
+    {
       const result = await callServer(process.env.REACT_APP_HOST_NAME + "/room/detail", "POST", { roomId: roomId });
       tempMessages = result.data.messages;
       setMessages(tempMessages);
       setTimePerTurn(result.data.timePerTurn);
-      console.log(result);
+
+      //Header related states
+      const username = localStorage.getItem("username");
+      props.roomJoined({ isHost: username === result.data.createdBy.username, isAvailable: result.data.isAvailable });
     };
 
     fetchRoomDetails();
 
     socket.emit("join", { roomIdT: roomId, token });
 
-    socket.on("turnName", (response) => {
+    socket.on("turnName", (response) =>
+    {
       //console.log("---- SOCKET: ON_turnName: ", response);
       setTurnName(response);
     });
 
-    socket.on("message", (response) => {
+    socket.on("message", (response) =>
+    {
       //console.log(response);
       response.content = response.message;
       tempMessages = tempMessages.concat([response]);
@@ -93,24 +112,28 @@ const Room = (props) => {
       scrollToBottom();
     });
 
-    socket.on("Username", (response) => {
+    socket.on("Username", (response) =>
+    {
       setUsername(response);
       // console.log("----Socket: ON Username -----");
       // console.log("RESPONE: ", response);
       // console.log("USERNAME: ", username);
     });
 
-    return () => {
+    return () =>
+    {
       props.roomLeft();
     };
   }, []);
 
-  const sendMessage = async (e) => {
+  const sendMessage = async (e) =>
+  {
     e.preventDefault();
 
     //console.log(roomId + " " + message);
 
-    if (message) {
+    if (message)
+    {
       let newMsg = {
         content: message,
         username: "Tôi",
@@ -122,7 +145,8 @@ const Room = (props) => {
 
       const result = await callServer(process.env.REACT_APP_HOST_NAME + "/message/add", "post", { roomId: roomId, content: message });
       //console.log(result);
-      if (result.status === 200) {
+      if (result.status === 200)
+      {
         //console.log('this');
         socket.emit("sendMessage", { roomId, message, token });
       }
@@ -131,23 +155,17 @@ const Room = (props) => {
   };
   // console.log(messages);
 
-  const handleResign = () => {
+  const handleResign = () =>
+  {
     setCloseModalVisible(true);
   };
-  const handleOfferDraw = () => {
+  const handleOfferDraw = () =>
+  {
     setDrawModalVisible(true);
   };
 
   return (
     <div style={{ padding: "50px" }}>
-      <Button
-        style={{ paddingTop: "50px" }}
-        onClick={() => {
-          handleBack();
-        }}
-      >
-        Thoát
-      </Button>
       <Row justify="space-between" gutter={30} align="middle">
         <Col id="infoArea" xs={24} sm={24} md={6} lg={6} style={{ padding: "30px", height: "85vh" }}>
           <Row style={{}} justify="space-between" align="middle">
@@ -227,7 +245,8 @@ const Room = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state) =>
+{
   return {
     token: state.user.token,
   };

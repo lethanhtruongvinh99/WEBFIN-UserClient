@@ -39,7 +39,7 @@ function App(props)
   return (
     <Router history={history}>
       <Switch>
-        <Route exact path="/auth/:token" component={AuthRedirect} />
+        <Route exact path="/auth/:token/:username" component={AuthRedirect} />
         <Route exact path="/login" component={LoginForm} />
         <Route exact path="/register" component={RegisterForm} />
         <Route exact path="/verify" component={Verify} />

@@ -1,18 +1,30 @@
-import { useState } from "react";
-import { Button, Col, Form, Input, Modal, Row } from "antd";
+import { Modal, Typography, Row, Col } from "antd";
+import { AimOutlined } from '@ant-design/icons';
 import "./index.css";
-const DrawModal = (props) => {
-  const handleOk = () => {
+const DrawModal = (props) =>
+{
+  const handleOk = () =>
+  {
     props.setModalVisible(false);
   };
 
-  const handleCancel = () => {
+  const handleCancel = () =>
+  {
     props.setModalVisible(false);
   };
 
   return (
-    <Modal title="Thông báo" visible={props.isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-      <h1 style={{ color: "blue" }}> Draw </h1>
+    <Modal footer={false} centered visible={props.isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+      <Row justify="center" align="middle" style={{ margin: '15px' }}>
+        <Col>
+          <AimOutlined style={{ fontSize: '48px' }} />
+        </Col>
+      </Row>
+      <Row justify="center" align="middle" style={{ margin: '15px' }}>
+        <Col>
+          <Typography.Title level={3} style={{ fontWeight: '300' }}> Bạn đã xin hoà! </Typography.Title>
+        </Col>
+      </Row>
     </Modal>
   );
 };

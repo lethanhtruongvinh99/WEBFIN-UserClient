@@ -3,9 +3,8 @@ import { ROOM_JOINED, ROOM_LEFT, PAGE_SWITCHED } from "../constants/action-types
 const initialState = {
     roomJoined: false,
     joinedUsers: [],
-    header: {
-
-    }
+    isHost: false,
+    isAvailable: false,
 };
 
 const HeaderReducer = (state = initialState, action) =>
@@ -13,7 +12,7 @@ const HeaderReducer = (state = initialState, action) =>
     switch (action.type)
     {
         case ROOM_JOINED: {
-            return { ...state, roomJoined: true, joinedUsers: action.payload };
+            return { ...state, roomJoined: true, isHost: action.payload.isHost, isAvailable: action.payload.isAvailable };
         }
 
         case ROOM_LEFT: {

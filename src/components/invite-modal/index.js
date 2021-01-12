@@ -11,7 +11,7 @@ const InviteModal = (props) =>
       visible={props.modalOpen}
       onCancel={props.onClose}
     >
-      <Row justify="center">
+      <Row justify="center" style={{ margin: '15px' }}>
         <Col>
           <Typography.Title level={3}>Mời người chơi</Typography.Title>
         </Col>

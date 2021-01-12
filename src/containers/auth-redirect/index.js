@@ -15,7 +15,10 @@ const AuthRedirect = (props) =>
   useEffect(() =>
   {
     const token = props.match.params.token;
+    const username = props.match.params.username;
+
     localStorage.setItem("token", token);
+    localStorage.setItem("username", username);
     props.login(token);
     props.history.push("/home");
   }, []);

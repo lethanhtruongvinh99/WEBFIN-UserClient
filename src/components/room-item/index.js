@@ -29,7 +29,7 @@ const RoomItem = (props) =>
         }
     }
 
-    const handleJoinRoom = async (info, mode) =>
+    const handleJoinRoom = async (info, mode, shouldCheckPass = true) =>
     {
         setLoading(!loading);
         //logged in and not logged in
@@ -45,18 +45,21 @@ const RoomItem = (props) =>
         if (result.auth)
         {
             // console.log(result.data._id);
-            if (result.data.password)
+            if (shouldCheckPass)
             {
-                console.log('password');
-                setRoomPassword(result.data.password);
-                setRoomId(result.data._id);
-                setPasswordModalVisible(true);
+                if (result.data.password)
+                {
+                    console.log('password');
+                    setRoomPassword(result.data.password);
+                    setRoomId(result.data._id);
+                    setPasswordModalVisible(true);
+                }
             }
             else
             {
-
                 history.push(`/room/${result.data._id}`)
-            };
+            }
+
         }
         else
         {
@@ -89,7 +92,7 @@ const RoomItem = (props) =>
                         <>{loading ? <Spin style={{ margin: 'auto' }} size="small" spinning={loading} /> : <EnterOutlined key="enter" onClick={() => { handleJoinRoom(props.info, 'play') }} />} </>,
                         <>{loading ? <Spin style={{ margin: 'auto' }} size="small" spinning={loading} /> : <EyeOutlined key="watch" onClick={() => { handleJoinRoom(props.info, 'observe') }} />} </>,
 
-                    ] : [<EyeOutlined key="watch" />,]}
+                    ] : [<>{loading ? <Spin style={{ margin: 'auto' }} size="small" spinning={loading} /> : <EyeOutlined key="watch" onClick={() => { handleJoinRoom(props.info, 'observe', false) }} />} </>]}
                 >
                     <Meta
                         avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}

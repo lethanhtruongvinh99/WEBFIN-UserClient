@@ -77,6 +77,7 @@ const LoginForm = (props) =>
     {
       setIsLoading(false);
       localStorage.setItem("token", result.accessToken);
+      localStorage.setItem("username", result.username);
       props.login(result.accessToken);
       socket.emit("login", { token: result.accessToken });
       props.history.push("/home");

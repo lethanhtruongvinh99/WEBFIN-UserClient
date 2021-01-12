@@ -1,24 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Typography, Avatar } from "antd";
 import callServer from '../../utils/NetwordUtils2';
-const UserProfile = (props) => {
+const UserProfile = (props) =>
+{
   const [isLoading, setIsLoading] = useState(true);
   const [profile, setProfile] = useState({});
   const [historyGame, setHistoryHame] = useState([]);
-  useEffect(()=> {
-    const getUserProfile = async () => {
+  useEffect(() =>
+  {
+    const getUserProfile = async () =>
+    {
       const response = await callServer(process.env.REACT_APP_HOST_NAME + '/auth/profile', "get");
-      if (response.status === 200) {
+      if (response.status === 200)
+      {
         const data = await response.json();
         console.log(data.account);
         setProfile(data.account);
         // console.log(profile);
-      } else {
+      } else
+      {
         const data = await response.json();
         Notification('error', data.message);
       }
     }
-    const getHistory = async () => {
+    const getHistory = async () =>
+    {
 
     }
     getUserProfile();
@@ -70,6 +76,17 @@ const UserProfile = (props) => {
         <Col>
           <Row justify="center">
             <Typography.Title level={4}>Trận đã chơi</Typography.Title>
+          </Row>
+          <Row justify="center">
+            <Typography.Title level={4} style={{ fontWeight: "300" }}>
+              {props.totalMatches ? props.totalMatches : "200"}
+            </Typography.Title>
+          </Row>
+        </Col>
+
+        <Col>
+          <Row justify="center">
+            <Typography.Title level={4}>Trận đã thắng</Typography.Title>
           </Row>
           <Row justify="center">
             <Typography.Title level={4} style={{ fontWeight: "300" }}>

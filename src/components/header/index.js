@@ -122,7 +122,7 @@ const HeaderCustom = (props) =>
         title={title}
         extra={[
           <Row gutter={45} align="middle">
-            {props.roomJoined && props.token ? (
+            {props.roomJoined && props.token && props.isHost && props.isAvailable ? (
               <Row gutter={45}>
                 <Col>
                   <Button
@@ -195,8 +195,8 @@ const HeaderCustom = (props) =>
 const mapStateToProps = (state) =>
 {
   const { token } = state.user;
-  const { roomJoined, header } = state.header;
-  return { token, roomJoined, header };
+  const { roomJoined, isHost, isAvailable } = state.header;
+  return { token, roomJoined, isHost, isAvailable };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HeaderCustom);
