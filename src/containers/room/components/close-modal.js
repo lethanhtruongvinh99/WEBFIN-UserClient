@@ -22,7 +22,7 @@ const CloseModal = (props) =>
       </Row>
       <Row justify="center" align="middle" style={{ margin: '15px' }}>
         <Col>
-          <Typography.Title level={3} style={{ fontWeight: '300' }}> Bạn đã đầu hàng! </Typography.Title>
+          <Typography.Title level={3} style={{ fontWeight: '300' }}> Bạn đã thua! </Typography.Title>
         </Col>
       </Row>
     </Modal>

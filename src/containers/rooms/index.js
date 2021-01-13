@@ -53,12 +53,12 @@ const Rooms = (props) =>
       const data = await response.json();
 
       //Placeholder for testing purpose, needs to redesign after api is complete
-      setWaitingRooms(data.rooms.awaiting);
-      setOngoingRooms(data.rooms.ongoing);
+      setWaitingRooms(data.rooms?.awaiting);
+      setOngoingRooms(data.rooms?.ongoing);
 
       //Set pagination
-      setCurrentWaitingRooms(chunk(data.rooms.awaiting, PERPAGE)[0]);
-      setCurrentOngoingRooms(chunk(data.rooms.ongoing, PERPAGE)[0]);
+      setCurrentWaitingRooms(chunk(data.rooms?.awaiting, PERPAGE)[0]);
+      setCurrentOngoingRooms(chunk(data.rooms?.ongoing, PERPAGE)[0]);
 
       setWaitingLoading(!waitingLoading);
     };
@@ -82,7 +82,7 @@ const Rooms = (props) =>
         </Row>
 
         <Row justify="end" style={{ margin: "30px 0px" }}>
-          <Pagination current={currentWaitingPge} hideOnSinglePage showSizeChanger={false} showLessItems showQuickJumper total={waitingRooms.length} responsive pageSize={PERPAGE} onChange={handleWaitingRoomsPageChange} />
+          <Pagination current={currentWaitingPge} hideOnSinglePage showSizeChanger={false} showLessItems showQuickJumper total={waitingRooms?.length} responsive pageSize={PERPAGE} onChange={handleWaitingRoomsPageChange} />
         </Row>
 
         <Row justify="center" align="middle">
@@ -100,7 +100,7 @@ const Rooms = (props) =>
         </Row>
 
         <Row justify="end" style={{ margin: "30px 0px" }}>
-          <Pagination current={currentOngoingPage} hideOnSinglePage showSizeChanger={false} showLessItems showQuickJumper total={ongoingRooms.length} responsive pageSize={PERPAGE} onChange={handleOngoingRoomsPageChange} />
+          <Pagination current={currentOngoingPage} hideOnSinglePage showSizeChanger={false} showLessItems showQuickJumper total={ongoingRooms?.length} responsive pageSize={PERPAGE} onChange={handleOngoingRoomsPageChange} />
         </Row>
 
       </Layout.Content>

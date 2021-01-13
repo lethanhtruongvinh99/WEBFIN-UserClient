@@ -21,49 +21,6 @@ const Leaderboard = (props) =>
 
       </Row>
 
-      <Row style={{ marginTop: "30px" }} justify="center" gutter={60}>
-        <Col>
-          <Row justify="center">
-            <Typography.Title level={4}>Số cúp</Typography.Title>
-          </Row>
-          <Row justify="center">
-            <Typography.Title level={4} style={{ fontWeight: "300" }}>
-              100
-            </Typography.Title>
-          </Row>
-        </Col>
-        <Col>
-          <Row justify="center">
-            <Typography.Title level={4}>Trận đã chơi</Typography.Title>
-          </Row>
-          <Row justify="center">
-            <Typography.Title level={4} style={{ fontWeight: "300" }}>
-              200
-            </Typography.Title>
-          </Row>
-        </Col>
-        <Col>
-          <Row justify="center">
-            <Typography.Title level={4}>Trận thắng</Typography.Title>
-          </Row>
-          <Row justify="center">
-            <Typography.Title level={4} style={{ fontWeight: "300" }}>
-              100
-            </Typography.Title>
-          </Row>
-        </Col>
-        <Col>
-          <Row justify="center">
-            <Typography.Title level={4}>Tỉ lệ thắng</Typography.Title>
-          </Row>
-          <Row justify="center">
-            <Typography.Title level={4} style={{ fontWeight: "300" }}>
-              100
-            </Typography.Title>
-          </Row>
-        </Col>
-      </Row>
-
       <Carousel infinite slidesPerRow={1}>
         <LeaderboardRow />
       </Carousel>

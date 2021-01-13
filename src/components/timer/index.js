@@ -1,17 +1,21 @@
 import React from "react";
 import { useState, useEffect } from "react";
 
-const Timer = (props) => {
+const Timer = (props) =>
+{
   const [second, setSecond] = useState("00");
   const [minute, setMinute] = useState("00");
-  const [isActive, setIsActive] = useState(false);
+  const isActive = props.isStart;
   const [counter, setCounter] = useState(props.timePerTurn);
 
-  useEffect(() => {
+  useEffect(() =>
+  {
     let intervalId;
 
-    if (isActive) {
-      intervalId = setInterval(() => {
+    if (isActive)
+    {
+      intervalId = setInterval(() =>
+      {
         const secondCounter = counter % 60;
         const minuteCounter = Math.floor(counter / 60);
 
@@ -20,31 +24,20 @@ const Timer = (props) => {
 
         setSecond(computedSecond);
         setMinute(computedMinute);
-        if(counter>0) setCounter((counter) => counter - 1);
+        if (counter > 0) setCounter((counter) => counter - 1);
       }, 1000);
     }
 
     return () => clearInterval(intervalId);
-  }, [isActive, counter]);
+  }, [isActive]);
 
-  const resetTimer = () => {
-    setIsActive(true);
-    setCounter(props.timePerTurn);
-  };
+
   return (
     <div className="container">
       <div className="time">
         <span className="minute">{minute}</span>
         <span> : </span>
         <span className="second">{second}</span>
-      </div>
-      <div className="buttons">
-        <button onClick={() => setIsActive(!isActive)} className="start">
-          {isActive ? "Pause" : "Start"}
-        </button>
-        <button onClick={resetTimer} className="reset">
-          Reset
-        </button>
       </div>
     </div>
   );

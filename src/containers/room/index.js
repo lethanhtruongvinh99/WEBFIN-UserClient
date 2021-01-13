@@ -1,21 +1,19 @@
-import { Col, Row, Statistic, Empty, Button, Avatar } from "antd";
+import { Button, Col, Empty, Row, Statistic, Typography } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { React, useEffect, useState } from "react";
+import { connect } from "react-redux";
+import { useHistory } from "react-router";
+import { animateScroll } from "react-scroll";
 import { socket } from "../../api";
 import ChatMessage from "../../components/chat-messages/index";
 import Game from "../../components/game/index";
 import callServer from "../../utils/NetworkUtils";
-import "./index.css";
-import Move from "./../../components/move/index";
-import { connect } from "react-redux";
-import { roomJoined, roomLeft } from "./../../actions/header-action";
-import { animateScroll } from "react-scroll";
-import { useHistory } from "react-router";
 import showNotification from "../../utils/NotificationUtils";
-import Timer from "../../components/timer";
-import WinModal from "./components/win-modal";
+import { roomJoined, roomLeft } from "./../../actions/header-action";
+import Move from "./../../components/move/index";
 import CloseModal from "./components/close-modal";
 import DrawModal from "./components/draw-modal";
+import "./index.css";
 
 let tempMessages = [];
 function scrollToBottom()
@@ -27,39 +25,47 @@ function scrollToBottom()
   });
 }
 
+let tempTime = 15;
+
 const Room = (props) =>
 {
   const token = localStorage.getItem("token");
-  const [username, setUsername] = useState("");
+  const username = localStorage.getItem("username")
   const [turnName, setTurnName] = useState("");
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState([]);
-  const [timePerTurn, setTimePerTurn] = useState(30);
-  const [isWinModalVisible, setWinModalVisible] = useState(false);
   const [isCloseModalVisible, setCloseModalVisible] = useState(false);
   const [isDrawModalVisible, setDrawModalVisible] = useState(false);
+
+  const [host, setHost] = useState({});
+  const [playerB, setPlayerB] = useState({});
+  const [result, setResult] = useState("");
+  const [moveList, setMoveList] = useState("");
+
+  const [isEnd, setIsEnd] = useState(false);
+  const [isStart, setIsStart] = useState(false);
+  const [winner, setWinner] = useState("");
+  const [readyToStart, setReadyToStart] = useState(false);
+
+  const [messages, setMessages] = useState([]);
+  const [timePerTurn, setTimePerTurn] = useState(0);
+
+
   const roomId = props.match.params.id;
   const history = useHistory();
+
   const handleBack = async () =>
   {
-    //
-    // console.log(roomId);
-    const result = await callServer(process.env.REACT_APP_HOST_NAME + "/room/leave", "POST", { roomId: roomId });
-    console.log(result);
-    if (result.status === 200)
-    {
-      socket.emit("leaveRoom", { roomId: roomId, sign: result.sign });
-      history.push("/home");
-    }
+    const winnerTemp = username === host.username ? 'O' : 'X';
+    socket.emit("leaveRoom", { roomId: roomId, sign: winnerTemp });
+    setWinner(winnerTemp);
+    handleGameEnd();
+
+    history.push("/home");
+
   };
   useEffect(() =>
   {
     socket.on("playerBOut", (response) =>
-    {
-      console.log(response.message);
-      showNotification("error", response.message);
-    });
-    socket.on("hostOut", (response) =>
     {
       console.log(response.message);
       showNotification("error", response.message);
@@ -76,7 +82,13 @@ const Room = (props) =>
     })
   }, []);
 
-  const handleStartGame = async () => { };
+  const handleStartGame = async () =>
+  {
+    setIsStart(true);
+    setTimePerTurn(tempTime);
+    socket.emit('startGame', { roomId });
+  };
+
   useEffect(() =>
   {
     props.roomJoined({ isHost: false, isAvailable: false });
@@ -86,10 +98,23 @@ const Room = (props) =>
       const result = await callServer(process.env.REACT_APP_HOST_NAME + "/room/detail", "POST", { roomId: roomId });
       tempMessages = result.data.messages;
       setMessages(tempMessages);
-      setTimePerTurn(result.data.timePerTurn);
+      tempTime = (result.data.timePerTurn);
+
+      setHost(result.data.createdBy);
+      setPlayerB(result.data.playerB);
+      setResult(result.data.winner?.username);
+      console.log(result.data)
+      setMoveList(result.data.moveList);
+
+      setIsEnd(result.data.isEnd || result.data.winner ? true : false);
+
+      if (result.data.createdBy && result.data.playerB && (username === result.data.createdBy.username || (username === result.data.playerB.username)))
+      {
+        setReadyToStart(true);
+        socket.emit('setRoomReady', { roomId });
+      }
 
       //Header related states
-      const username = localStorage.getItem("username");
       props.roomJoined({ isHost: username === result.data.createdBy.username, isAvailable: result.data.isAvailable });
     };
 
@@ -99,26 +124,36 @@ const Room = (props) =>
 
     socket.on("turnName", (response) =>
     {
-      //console.log("---- SOCKET: ON_turnName: ", response);
+      console.log("---- SOCKET: ON_turnName: ", response);
       setTurnName(response);
     });
 
     socket.on("message", (response) =>
     {
-      //console.log(response);
       response.content = response.message;
       tempMessages = tempMessages.concat([response]);
       setMessages(tempMessages);
       scrollToBottom();
     });
 
-    socket.on("Username", (response) =>
+    socket.on('gameStarted', () =>
     {
-      setUsername(response);
-      // console.log("----Socket: ON Username -----");
-      // console.log("RESPONE: ", response);
-      // console.log("USERNAME: ", username);
-    });
+      setIsStart(true);
+      setTimePerTurn(tempTime);
+    }
+    )
+
+    socket.on('gameEnded', (data) =>
+    {
+      setResult(data);
+      setTimePerTurn(0);
+      setIsEnd(true);
+    })
+
+    socket.on('roomIsReady', () =>
+    {
+      setReadyToStart(true);
+    })
 
     return () =>
     {
@@ -153,31 +188,56 @@ const Room = (props) =>
       // console.log(message);
     }
   };
-  // console.log(messages);
 
   const handleResign = () =>
   {
     setCloseModalVisible(true);
+    const winnerTemp = username === host.username ? 'O' : 'X';
+    setWinner(winnerTemp);
+    handleGameEnd();
   };
   const handleOfferDraw = () =>
   {
     setDrawModalVisible(true);
+    handleGameEnd();
   };
+
+  const handleTimeout = () =>
+  {
+    if (!isEnd)
+    {
+      const winnerTemp = username === host.username ? 'O' : 'X';
+      setWinner(winnerTemp);
+      handleGameEnd();
+    }
+  }
+
+  const handleGameEnd = () =>
+  {
+    socket.emit('endGame', { roomId, winner });
+    setTimePerTurn(0);
+    setIsEnd(true);
+  }
+
+  const resetTimer = () =>
+  {
+    let newTime = tempTime + 0.000001 === timePerTurn ? tempTime + 0.000002 : tempTime + 0.000001;
+    setTimePerTurn(newTime);
+  }
 
   return (
     <div style={{ padding: "50px" }}>
       <Row justify="space-between" gutter={30} align="middle">
         <Col id="infoArea" xs={24} sm={24} md={6} lg={6} style={{ padding: "30px", height: "85vh" }}>
-          <Row style={{}} justify="space-between" align="middle">
+          <Row justify="space-between" style={{ display: isEnd ? 'none' : "flex" }} align="middle">
             <Col>
-              <Statistic title="Player turn" value="nhatvinh43" />
+              <Statistic title="Bạn" value={username} />
             </Col>
             <Col>
-              <Statistic title="Symbol" value="X " />
+              <Statistic title="Ký hiệu" value={turnName} />
             </Col>
             <Col>
-              {/* <Statistic title="Time left" value="00:15" /> */}
-              <Timer timePerTurn={timePerTurn}></Timer>
+              <Statistic.Countdown title="Còn lại" value={Date.now() + (1000 * timePerTurn)} onFinish={handleTimeout} />
             </Col>
           </Row>
           <Row style={{ overflowY: "scroll", height: "65vh", marginTop: "15px" }}>
@@ -194,29 +254,35 @@ const Room = (props) =>
 
         <Col xs={24} sm={24} md={10} lg={10} className="playing-area" id="infoRow">
           <Row justify="center" align="middle" gutter={30} style={{ marginBottom: "30px" }}>
-            <Col>
+            {/*<Col>
               <Avatar size={48} src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
             </Col>
             <Col>
               <Avatar size={48} src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+            </Col>*/}
+            {isEnd && result ? <Col>
+              <Typography.Title level={4}>{"Người chơi " + result + " đã thắng cuộc!"}</Typography.Title>
             </Col>
-            <Col>
-              <Button disabled={props.token ? false : true} type="primary" onClick={() => handleStartGame()}>
-                Bắt đầu trận
+              : <>
+                <Col>
+                  <Button disabled={props.token && readyToStart ? false : true} loading={readyToStart ? false : true} type="primary" hidden={isStart} onClick={() => handleStartGame()}>
+                    {readyToStart ? "Bắt đầu trận" : "Đang đợi người chơi"}
+                  </Button>
+                </Col>
+                <Col>
+                  <Button onClick={handleResign} disabled={props.token ? false : true} hidden={!isStart} danger>
+                    Xin thua
               </Button>
-            </Col>
-            <Col>
-              <Button onClick={handleResign} disabled={props.token ? false : true} danger>
-                Xin thua
+                </Col>
+                <Col>
+                  <Button onClick={handleOfferDraw} disabled={props.token ? false : true} hidden={!isStart} danger>
+                    Xin hoà
               </Button>
-            </Col>
-            <Col>
-              <Button onClick={handleOfferDraw} disabled={props.token ? false : true} danger>
-                Xin hoà
-              </Button>
-            </Col>
+                </Col>
+              </>
+            }
           </Row>
-          <Game Username={username} size={20} TurnName={turnName} roomId={roomId}></Game>
+          <Game handleGameEnd={handleGameEnd} winner={winner} setWinner={setWinner} resetTimer={resetTimer} isStart={isStart} isEnd={isEnd} Username={username} size={20} TurnName={turnName} roomId={roomId}></Game>
         </Col>
 
         <Col className="chat-box" xs={24} sm={24} md={6} lg={6}>
@@ -226,8 +292,8 @@ const Room = (props) =>
 
           <Row>
             <TextArea
-              disabled={props.token ? false : true}
-              placeholder="Type your message here"
+              disabled={props.token && !isEnd ? false : true}
+              placeholder="Nhập tin nhắn"
               autoSize={{ minRows: 3, maxRows: 3 }}
               className="message-input-box"
               value={message}

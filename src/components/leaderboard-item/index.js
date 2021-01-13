@@ -1,15 +1,16 @@
 import { Card, Avatar, Col, Statistic, Row, Typography } from "antd";
 import "./index.css";
-import {} from "@ant-design/icons";
+import { } from "@ant-design/icons";
 
-const LeaderboardItem = (props) => {
+const LeaderboardItem = (props) =>
+{
   // console.log(props.info);
   return (
     <Col>
       <Card hoverable>
         <Row justify="center" style={{ marginBottom: "15px" }}>
           <Col>
-            <Typography.Title level={4}>1</Typography.Title>
+            <Typography.Title level={4}>{props.number}</Typography.Title>
           </Col>
         </Row>
         <Row justify="center">
@@ -29,10 +30,10 @@ const LeaderboardItem = (props) => {
         </Row>
         <Row justify="center" style={{ marginTop: "15px" }} gutter={15}>
           <Col>
-            <Statistic title="Total matches" value={110} />
+            <Statistic title="Thứ hạng" value={props.number} />
           </Col>
           <Col>
-            <Statistic title="Cups won" value={props.info.score} />
+            <Statistic title="Tổng số cúp" value={props.info.score} />
           </Col>
         </Row>
       </Card>

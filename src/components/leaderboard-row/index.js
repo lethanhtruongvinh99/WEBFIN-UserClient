@@ -30,7 +30,7 @@ const LeaderboardRow = (props) =>
     <div>
       <Row style={contentStyle} justify="center" align="middle" gutter={30}>
         {isLoading ? <Spin size="large" /> : null}
-        {topPlayer.length > 0 ? topPlayer.map(item => (<LeaderboardItem info={item} />)) : null}
+        {topPlayer.length > 0 ? topPlayer.map((item, index) => (<LeaderboardItem info={item} number={index + 1} />)) : null}
       </Row>
     </div>
   );

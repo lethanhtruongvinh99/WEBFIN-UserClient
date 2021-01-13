@@ -118,7 +118,7 @@ const HeaderCustom = (props) =>
         className="header"
         ghost={false}
         style={{ zIndex: "1" }}
-        onBack={() => window.history.back()}
+        onBack={() => history.push('/home')}
         title={title}
         extra={[
           <Row gutter={45} align="middle">

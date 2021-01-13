@@ -19,16 +19,14 @@ const QuickJoinButton = (props) =>
   const handleQuickJoin = () =>
   {
     setLoading(!loading);
-
     socket.emit('joinQueue', { token: props.token });
-
   };
 
   useEffect(() =>
   {
     socket.on('quickRoomCreated', (data) =>
     {
-      console.log(data);
+      setLoading(false);
       history.push('/room/' + data._id);
     })
   }, [])
