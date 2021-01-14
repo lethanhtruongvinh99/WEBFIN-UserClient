@@ -15,7 +15,7 @@ const Move = (props) =>
   return (
     <Comment
       className="move"
-      author={<a>Han Solo</a>}
+      author={<a>{props.username}</a>}
       avatar={
         <Avatar
           src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
