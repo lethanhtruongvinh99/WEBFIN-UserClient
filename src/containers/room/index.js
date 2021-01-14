@@ -78,6 +78,7 @@ const Room = (props) =>
     //socket.removeAllListeners();
     return () =>
     {
+
       handleBack();
     };
   }, []);
@@ -250,11 +251,10 @@ const Room = (props) =>
               <Statistic.Countdown title="Còn lại" value={Date.now() + 1000 * timePerTurn} onFinish={handleTimeout} />
             </Col>
           </Row>
-          <Row style={{ overflowY: "scroll", height: "65vh", marginTop: "15px" }}>
-            {moveList?.map(item => <Move x={item.x} y={item.y} username={item.username} symbol={item.symbol} />)}
-            {/* {moveCard.map((item, index) => {
-              <Move key={index} username={item.username} comment={"( " + item.move.x + "," + item.move.y + ")"} />;
-            })} */}
+          <Row style={{ overflowY: "scroll", height: "65vh", marginTop: "15px" }} align="top">
+            <Col span={24}>
+              {moveList?.map(item => <Move x={item.x} y={item.y} username={item.username} symbol={item.symbol} />)}
+            </Col>
           </Row>
         </Col>
 
@@ -298,6 +298,7 @@ const Room = (props) =>
             isStart={isStart}
             isEnd={isEnd}
             moveList={moveList}
+            setMoveList={setMoveList}
             Username={username}
             size={20}
             TurnName={turnName}
