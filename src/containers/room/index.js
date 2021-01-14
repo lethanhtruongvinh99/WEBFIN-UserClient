@@ -17,7 +17,8 @@ import DrawModal from "./components/draw-modal";
 import "./index.css";
 
 let tempMessages = [];
-function scrollToBottom() {
+function scrollToBottom()
+{
   animateScroll.scrollToBottom({
     containerId: "chatBox",
     duration: "0",
@@ -27,7 +28,8 @@ function scrollToBottom() {
 
 let tempTime = 15;
 
-const Room = (props) => {
+const Room = (props) =>
+{
   const token = localStorage.getItem("token");
   const username = localStorage.getItem("username");
   const [turnName, setTurnName] = useState("");
@@ -39,7 +41,7 @@ const Room = (props) => {
   const [playerB, setPlayerB] = useState({});
   const [result, setResult] = useState("");
   const [moveCard, setMoveCard] = useState([]);
-  const [moveList, setMoveList] = useState("");
+  const [moveList, setMoveList] = useState([]);
 
   const [isEnd, setIsEnd] = useState(false);
   const [isStart, setIsStart] = useState(false);
@@ -52,7 +54,8 @@ const Room = (props) => {
   const roomId = props.match.params.id;
   const history = useHistory();
 
-  const handleBack = async () => {
+  const handleBack = async () =>
+  {
     const winnerTemp = username === host.username ? "O" : "X";
     socket.emit("leaveRoom", { roomId: roomId, sign: winnerTemp });
     setWinner(winnerTemp);
@@ -60,31 +63,38 @@ const Room = (props) => {
 
     history.push("/home");
   };
-  useEffect(() => {
-    socket.on("playerBOut", (response) => {
+  useEffect(() =>
+  {
+    socket.on("playerBOut", (response) =>
+    {
       console.log(response.message);
       showNotification("error", response.message);
     });
-    socket.on("hostOut", (response) => {
+    socket.on("hostOut", (response) =>
+    {
       console.log(response.message);
       showNotification("error", response.message);
     });
     //socket.removeAllListeners();
-    return () => {
+    return () =>
+    {
       handleBack();
     };
   }, []);
 
-  const handleStartGame = async () => {
+  const handleStartGame = async () =>
+  {
     setIsStart(true);
     setTimePerTurn(tempTime);
     socket.emit("startGame", { roomId });
   };
 
-  useEffect(() => {
+  useEffect(() =>
+  {
     props.roomJoined({ isHost: false, isAvailable: false });
 
-    const fetchRoomDetails = async () => {
+    const fetchRoomDetails = async () =>
+    {
       const result = await callServer(process.env.REACT_APP_HOST_NAME + "/room/detail", "POST", { roomId: roomId });
       tempMessages = result.data.messages;
       setMessages(tempMessages);
@@ -98,7 +108,8 @@ const Room = (props) => {
 
       setIsEnd(result.data.isEnd || result.data.winner ? true : false);
 
-      if (result.data.createdBy && result.data.playerB && (username === result.data.createdBy.username || username === result.data.playerB.username)) {
+      if (result.data.createdBy && result.data.playerB && (username === result.data.createdBy.username || username === result.data.playerB.username))
+      {
         setReadyToStart(true);
         socket.emit("setRoomReady", { roomId });
       }
@@ -111,44 +122,52 @@ const Room = (props) => {
 
     socket.emit("join", { roomIdT: roomId, token });
 
-    socket.on("turnName", (response) => {
+    socket.on("turnName", (response) =>
+    {
       console.log("---- SOCKET: ON_turnName: ", response);
       setTurnName(response);
     });
 
-    socket.on("message", (response) => {
+    socket.on("message", (response) =>
+    {
       response.content = response.message;
       tempMessages = tempMessages.concat([response]);
       setMessages(tempMessages);
       scrollToBottom();
     });
 
-    socket.on("gameStarted", () => {
+    socket.on("gameStarted", () =>
+    {
       setIsStart(true);
       setTimePerTurn(tempTime);
     });
 
-    socket.on("gameEnded", (data) => {
+    socket.on("gameEnded", (data) =>
+    {
       setResult(data);
       setTimePerTurn(0);
       setIsEnd(true);
     });
 
-    socket.on("roomIsReady", () => {
+    socket.on("roomIsReady", () =>
+    {
       setReadyToStart(true);
     });
 
-    return () => {
+    return () =>
+    {
       props.roomLeft();
     };
   }, []);
 
-  const sendMessage = async (e) => {
+  const sendMessage = async (e) =>
+  {
     e.preventDefault();
 
     //console.log(roomId + " " + message);
 
-    if (message) {
+    if (message)
+    {
       let newMsg = {
         content: message,
         username: "Tôi",
@@ -160,7 +179,8 @@ const Room = (props) => {
 
       const result = await callServer(process.env.REACT_APP_HOST_NAME + "/message/add", "post", { roomId: roomId, content: message });
       //console.log(result);
-      if (result.status === 200) {
+      if (result.status === 200)
+      {
         //console.log('this');
         socket.emit("sendMessage", { roomId, message, token });
       }
@@ -168,32 +188,38 @@ const Room = (props) => {
     }
   };
 
-  const handleResign = () => {
+  const handleResign = () =>
+  {
     setCloseModalVisible(true);
     const winnerTemp = username === host.username ? "O" : "X";
     setWinner(winnerTemp);
     handleGameEnd();
   };
-  const handleOfferDraw = () => {
+  const handleOfferDraw = () =>
+  {
     setDrawModalVisible(true);
     handleGameEnd();
   };
 
-  const handleTimeout = () => {
-    if (!isEnd) {
+  const handleTimeout = () =>
+  {
+    if (!isEnd)
+    {
       const winnerTemp = username === host.username ? "O" : "X";
       setWinner(winnerTemp);
       handleGameEnd();
     }
   };
 
-  const handleGameEnd = () => {
+  const handleGameEnd = () =>
+  {
     socket.emit("endGame", { roomId, winner });
     setTimePerTurn(0);
     setIsEnd(true);
   };
 
-  const resetTimer = () => {
+  const resetTimer = () =>
+  {
     let newTime = tempTime + 0.000001 === timePerTurn ? tempTime + 0.000002 : tempTime + 0.000001;
     setTimePerTurn(newTime);
   };
@@ -211,7 +237,7 @@ const Room = (props) => {
   // };
   return (
     <div style={{ padding: "50px" }}>
-      <Row justify="space-between" gutter={30} align="middle">
+      <Row justify="space-between" gutter={30} align="middle" style={{ width: '100vw', padding: '50px' }}>
         <Col id="infoArea" xs={24} sm={24} md={6} lg={6} style={{ padding: "30px", height: "85vh" }}>
           <Row justify="space-between" style={{ display: isEnd ? "none" : "flex" }} align="middle">
             <Col>
@@ -225,14 +251,7 @@ const Room = (props) => {
             </Col>
           </Row>
           <Row style={{ overflowY: "scroll", height: "65vh", marginTop: "15px" }}>
-            <Move/>
-            <Move/>
-            <Move/>
-            <Move/>
-            <Move/>
-            <Move/>
-            <Move/>
-            <Move/>
+            {moveList?.map(item => <Move x={item.x} y={item.y} username={item.username} symbol={item.symbol} />)}
             {/* {moveCard.map((item, index) => {
               <Move key={index} username={item.username} comment={"( " + item.move.x + "," + item.move.y + ")"} />;
             })} */}
@@ -252,24 +271,24 @@ const Room = (props) => {
                 <Typography.Title level={4}>{"Người chơi " + result + " đã thắng cuộc!"}</Typography.Title>
               </Col>
             ) : (
-              <>
-                <Col>
-                  <Button disabled={props.token && readyToStart ? false : true} loading={readyToStart ? false : true} type="primary" hidden={isStart} onClick={() => handleStartGame()}>
-                    {readyToStart ? "Bắt đầu trận" : "Đang đợi người chơi"}
+                <>
+                  <Col>
+                    <Button disabled={props.token && readyToStart ? false : true} loading={readyToStart ? false : true} type="primary" hidden={isStart} onClick={() => handleStartGame()}>
+                      {readyToStart ? "Bắt đầu trận" : "Đang đợi người chơi"}
+                    </Button>
+                  </Col>
+                  <Col>
+                    <Button onClick={handleResign} disabled={props.token ? false : true} hidden={!isStart} danger>
+                      Xin thua
                   </Button>
-                </Col>
-                <Col>
-                  <Button onClick={handleResign} disabled={props.token ? false : true} hidden={!isStart} danger>
-                    Xin thua
+                  </Col>
+                  <Col>
+                    <Button onClick={handleOfferDraw} disabled={props.token ? false : true} hidden={!isStart} danger>
+                      Xin hoà
                   </Button>
-                </Col>
-                <Col>
-                  <Button onClick={handleOfferDraw} disabled={props.token ? false : true} hidden={!isStart} danger>
-                    Xin hoà
-                  </Button>
-                </Col>
-              </>
-            )}
+                  </Col>
+                </>
+              )}
           </Row>
           <Game
             handleGameEnd={handleGameEnd}
@@ -283,7 +302,7 @@ const Room = (props) => {
             size={20}
             TurnName={turnName}
             roomId={roomId}
-            // receiveMoveInfoFromGame={receiveMoveInfoFromGame}
+          // receiveMoveInfoFromGame={receiveMoveInfoFromGame}
           ></Game>
         </Col>
 
@@ -313,7 +332,8 @@ const Room = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state) =>
+{
   return {
     token: state.user.token,
   };
