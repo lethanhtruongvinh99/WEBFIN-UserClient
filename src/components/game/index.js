@@ -8,7 +8,10 @@ import callServer from "../../utils/NetworkUtils";
 import Move from "./../move/index";
 import WinModal from "../../containers/room/components/win-modal";
 import CloseModal from "../../containers/room/components/close-modal";
+import { uniqWith } from 'lodash'
 import DrawModal from "../../containers/room/components/draw-modal";
+
+let tmpMoveList = [];
 
 function Game(props)
 {
@@ -36,6 +39,8 @@ function Game(props)
 
   useEffect(() =>
   {
+    tmpMoveList = props.moveList;
+
     if (props.isEnd)
     {
       console.log("---------- IN LOAD GAME------------------------")
@@ -51,7 +56,7 @@ function Game(props)
         lastMove: -1,
       });
     }
-  }, []);
+  }, [props.isEnd]);
 
 
   useEffect(() =>
@@ -60,11 +65,18 @@ function Game(props)
     {
       if (response.username !== username && isFinish === false)
       {
+
         props.resetTimer();
         let squares = state.squares;
         const i = Math.floor(response.move / sizeBoard);
         const j = response.move % sizeBoard;
         squares[i][j] = response.opponentTurnName;
+
+        tmpMoveList.push({ x: i, y: j, username: "", symbol: response.opponentTurnName });
+        tmpMoveList = uniqWith(tmpMoveList, (item1, item2) => item1.x === item2.x && item1.y === item2.y);
+        props.setMoveList(tmpMoveList);
+
+
         setState({
           squares: squares,
           lastMove: response.move,
@@ -127,6 +139,11 @@ function Game(props)
       setIsFinish(true);
     }
     //props.receiveMoveInfoFromGame(username, { x:x, y:y });
+
+    tmpMoveList.push({ x, y, username: "", symbol: turnName });
+    tmpMoveList = uniqWith(tmpMoveList, (item1, item2) => item1.x === item2.x && item1.y === item2.y);
+    props.setMoveList(tmpMoveList);
+
     const result = await callServer(process.env.REACT_APP_HOST_NAME + "/room/move", "POST", { roomId: props.roomId, move: { x: x, y: y, username: username, symbol: turnName } });
     console.log(result);
     if (result.status)
