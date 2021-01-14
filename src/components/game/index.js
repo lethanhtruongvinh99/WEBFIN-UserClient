@@ -36,19 +36,21 @@ function Game(props)
 
   useEffect(() =>
   {
-
-    console.log("---------- IN LOAD GAME------------------------")
-    let history_board = initMatrix(props.size);
-    for (let i = 0; i < props.moveList.length; i++)
+    if (props.isEnd)
     {
-      let x = props.moveList[i].x;
-      let y = props.moveList[i].y;
-      history_board[x][y] = props.moveList[i].symbol;
+      console.log("---------- IN LOAD GAME------------------------")
+      let history_board = initMatrix(props.size);
+      for (let i = 0; i < props.moveList.length; i++)
+      {
+        let x = props.moveList[i].x;
+        let y = props.moveList[i].y;
+        history_board[x][y] = props.moveList[i].symbol;
+      }
+      setState({
+        squares: history_board,
+        lastMove: -1,
+      });
     }
-    setState({
-      squares: history_board,
-      lastMove: -1,
-    });
   }, []);
 
 
