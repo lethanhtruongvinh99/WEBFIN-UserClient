@@ -20,7 +20,7 @@ const UserProfile = (props) =>
       } else
       {
         const data = await response.json();
-        Notification('error', data.message);
+        //Notification('error', "data.message: ERROR");
       }
     }
     const getHistory = async () =>

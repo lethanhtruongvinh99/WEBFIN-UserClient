@@ -35,19 +35,19 @@ function Game(props) {
 
   useEffect(() => {
     if (props.isEnd) {
-    console.log("---------- IN LOAD GAME------------------------");
-    let history_board = initMatrix(props.size);
-    for (let i = 0; i < props.moveList.length; i++) {
-      let x = props.moveList[i].x;
-      let y = props.moveList[i].y;
-      history_board[x][y] = props.moveList[i].symbol;
+      console.log("---------- IN LOAD GAME------------------------");
+      let history_board = initMatrix(props.size);
+      for (let i = 0; i < props.moveList.length; i++) {
+        let x = props.moveList[i].x;
+        let y = props.moveList[i].y;
+        history_board[x][y] = props.moveList[i].symbol;
+      }
+      setState({
+        squares: history_board,
+        lastMove: -1,
+      });
     }
-    setState({
-      squares: history_board,
-      lastMove: -1,
-    });
-    }
-  });
+  }, [props.isEnd]);
 
   useEffect(() => {
     socket.on("sendMove", (response) => {
@@ -105,7 +105,6 @@ function Game(props) {
     winner = calculateWinner(squares, i);
     if (winner) {
       props.setWinner(winner);
-      props.handleGameEnd();
       if (winner === turnName) {
         setWinModalVisible(true);
       }
@@ -113,12 +112,8 @@ function Game(props) {
     }
     //props.receiveMoveInfoFromGame(username, { x:x, y:y });
     const result = await callServer(process.env.REACT_APP_HOST_NAME + "/room/move", "POST", { roomId: props.roomId, move: { x: x, y: y, username: username, symbol: turnName } });
-    console.log(result);
-    if (result.status) {
-      sendMove(i, turnName);
-    } else {
-      // rollback
-    }
+    sendMove(i, turnName);
+    if (winner) {props.handleGameEnd(); } 
   };
   return (
     <div>

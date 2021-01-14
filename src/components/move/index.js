@@ -15,19 +15,14 @@ const Move = (props) =>
   return (
     <Comment
       className="move"
-      author={<a>{props.username}</a>}
+      author={props.username}
       avatar={
         <Avatar
           src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
           alt="Han Solo"
         />
       }
-      content={<p>{props.comment ? props.comment : "Di chuyển tới (1,3)"}</p>}
-      datetime={
-        <Tooltip title={moment().format("YYYY-MM-DD HH:mm:ss")}>
-          <span>{moment().fromNow()}</span>
-        </Tooltip>
-      }
+      content={<p>{props.comment ? props.comment : "Đã đánh dấu " + props.symbol + " ở ô (" + props.x + ', ' + props.y + ')'}</p>}
     />
   );
 };
